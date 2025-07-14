@@ -7,6 +7,7 @@ const registerUserSchema = z.object({
   password: z.string().min(6),
   firstName: z.string().min(2),
   lastName: z.string().min(2),
+  isAdmin: z.boolean().optional().default(false)
 });
 
 export default defineEventHandler(async (request) => {
@@ -21,7 +22,7 @@ export default defineEventHandler(async (request) => {
     });
   }
 
-  const { email, firstName, lastName } = parsed.data;
+  const { email, firstName, lastName, isAdmin } = parsed.data;
 
   const hashedPassword = await bcrypt.hash(body.password, 12);
 
@@ -31,12 +32,14 @@ export default defineEventHandler(async (request) => {
       lastName,
       email,
       hashedPassword,
+      isAdmin
     },
     select: {
       id: true,
       firstName: true,
       lastName: true,
       email: true,
+      isAdmin: true,
     },
   });
   return newUser;
