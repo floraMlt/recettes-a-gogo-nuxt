@@ -56,7 +56,7 @@ model Recipe {
   instructions    String[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  preparationTime Int
+  preparationTime Int?
   cookingTime     Int?
   category        Category
   isPublic        Boolean  @default(false)
@@ -79,14 +79,15 @@ model Ingredient {
 }
 
 model RecipeIngredient {
+  id           String   @id @default(cuid())
   recipeId     String
   ingredientId String
   quantity     Float
 
-  recipe     Recipe     @relation(fields: [recipeId], references: [id])
-  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Restrict)
 
-  @@id([recipeId, ingredientId])
+  @@unique([recipeId, ingredientId])
 }
 
 model Favorite {

@@ -6,27 +6,24 @@ export default defineEventHandler(async (event) => {
   if (!id) {
     throw createError({
       statusCode: 400,
-      message: "Missing user ID in route"
+      message: "Missing ingredient ID in route"
     })
   }
 
   try {
-    const deletedUser = await prisma.user.delete({
+    const deletedIngredient = await prisma.ingredient.delete({
       where: { id },
       select: {
         id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        isAdmin: true
+        title: true
       }
     })
 
-    return { message: "User deleted", user: deletedUser }
+    return { message: "Ingredient deleted", ingredient: deletedIngredient }
   } catch {
     throw createError({
       statusCode: 404,
-      message: `User with id ${id} not found`
+      message: `Ingredient with id ${id} not found`
     })
   }
 })

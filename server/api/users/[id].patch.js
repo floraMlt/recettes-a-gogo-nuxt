@@ -7,7 +7,7 @@ const updateUserSchema = z.object({
   password: z.string().min(6).optional(),
   firstName: z.string().min(2).optional(),
   lastName: z.string().min(2).optional(),
-  isAdmin: z.boolean().optional(),
+  isAdmin: z.boolean().optional()
 })
 
 export default defineEventHandler(async (request) => {
@@ -19,7 +19,7 @@ export default defineEventHandler(async (request) => {
   if (!parsed.success) {
     throw createError({
       statusCode: 400,
-      message: parsed.error.errors.map((err) => err.message).join(", "),
+      message: parsed.error.errors.map((err) => err.message).join(", ")
     })
   }
 
@@ -39,8 +39,8 @@ export default defineEventHandler(async (request) => {
       firstName: true,
       lastName: true,
       email: true,
-      isAdmin: true,
-    },
+      isAdmin: true
+    }
   })
 
   return updatedUser
