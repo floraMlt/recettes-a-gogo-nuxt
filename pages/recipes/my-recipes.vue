@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Les recettes</h1>
+    <h1>Mes recettes</h1>
 
     <div>
       <div v-if="pending">Chargement...</div>

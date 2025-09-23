@@ -1,0 +1,60 @@
+<template>
+  <form class="w-full h-full flex flex-col gap-2 p-4" @submit="onSignUp">
+    <div class="flex flex-row justify-center items-center gap-3 my-1">
+      <User class="size-5" />
+
+      <h1 class="text-lg text-center">Inscription</h1>
+    </div>
+
+    <div class="flex justify-between gap-2">
+      <InputText name="firstName" placeholder="Prénom" input-class="w-[48%]" />
+
+      <InputText name="lastName" placeholder="Nom" input-class="w-[48%]" />
+    </div>
+
+    <InputText name="email" placeholder="Email" />
+
+    <InputText name="password" type="password" placeholder="Mot de passe" />
+
+    <Button size="lg" type="submit" class="mt-2 hover:cursor-pointer">
+      Créer un compte
+    </Button>
+  </form>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { User } from 'lucide-vue-next'
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as z from 'zod'
+
+import InputText from '@/components/inputs/InputText'
+
+const { signIn } = useAuth()
+
+const validationSchema = toTypedSchema(
+  z.object({
+    email: z.string().email(),
+    password: z.string().min(6),
+    firstName: z.string().min(2).optional(),
+    lastName: z.string().min(2).optional(),
+    isAdmin: z.boolean().optional().default(false)
+  })
+)
+
+const { values, errors, handleSubmit } = useForm({
+  validationSchema
+})
+
+const onSignUp = handleSubmit(async values => {
+  try {
+    await $fetch('/api/users', {
+      method: 'POST',
+      body: values
+    })
+  } catch (error) {
+    console.error('Error creating user:', error)
+  }
+})
+</script>

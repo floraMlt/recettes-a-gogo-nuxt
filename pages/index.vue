@@ -1,11 +1,18 @@
 <template>
   <div>
-  <h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>
+    <NavigationMenu />
+
+    <h1 class="text-3xl font-bold text-center">
+      Bienvenue sur Recette à gogo !
+    </h1>
+
     <div>
-      <div v-if="pending">Chargement...</div>
+      <div v-if="pending">
+        <Loader />
+      </div>
+
       <div v-else-if="error">Erreur : {{ error.message }}</div>
+
       <div v-else>
         <ul>
           <li v-for="user in data" :key="user.id">
@@ -14,24 +21,18 @@
         </ul>
       </div>
     </div>
-    <button @click="refresh">Rafraîchir</button>
-        <button v-if="status == 'authenticated'" @click="signOut()">
-      Sign Out
-    </button>
+
+    <Button @click="refresh">Rafraîchir</Button>
   </div>
-
-
 </template>
 
 <script setup>
-const { data, pending, error, refresh } = useFetch("/api/users");
-
-const { signOut, status } = useAuth();
+const { data, pending, error, refresh } = useFetch('/api/users')
 
 definePageMeta({
-  title: "Home Page",
+  title: 'Home Page',
   meta: [
-    { name: "description", content: "This is the home page of my Nuxt app." },
-  ],
-});
+    { name: 'description', content: 'This is the home page of my Nuxt app.' }
+  ]
+})
 </script>

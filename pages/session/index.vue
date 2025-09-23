@@ -1,31 +1,17 @@
 <template>
-  <div>
-    <p>{{ status }}</p>
-    <template v-if="status == 'unauthenticated'">
-      <input v-model="email" placeholder="Email" />
-      <input v-model="password" type="password" placeholder="Password" />
-      <button @click="signIn('credentials', { email, password })">
-        Sign In
-      </button>
-    </template>
-    <button v-if="status == 'authenticated'" @click="signOut()">
-      Sign Outç
-    </button>
+  <div class="h-screen w-full flex flex-col items-center">
+    <div v-if="status == 'unauthenticated'">
+      <LoginForm />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-
 definePageMeta({
-  title: "Home Page",
-  meta: [
-    { name: "description", content: "This is the home page of my Nuxt app." },
-  ],
+  title: 'Login Page',
+  meta: [{ name: 'Login', content: 'This is the login page' }],
   auth: { unauthenticatedOnly: true, navigateAuthenticatedTo: '/' }
-});
+})
 
-const email = ref("");
-const password = ref("");
-const { status, signIn, signOut, getSession } = useAuth();
+const { status } = useAuth()
 </script>
