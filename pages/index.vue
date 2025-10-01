@@ -1,7 +1,5 @@
 <template>
   <div>
-    <NavigationMenu />
-
     <h1 class="text-3xl font-bold text-center">
       Bienvenue sur Recette à gogo !
     </h1>

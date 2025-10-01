@@ -31,7 +31,7 @@ const { signIn } = useAuth()
 const validationSchema = toTypedSchema(
   z.object({
     email: z.string().email(),
-    password: z.string().min(6)
+    password: z.string().min(5)
   })
 )
 const { values, errors, handleSubmit } = useForm({
