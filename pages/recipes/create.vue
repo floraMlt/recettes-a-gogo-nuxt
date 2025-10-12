@@ -23,29 +23,29 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue'
 
-const title = ref("");
-const description = ref("");
-const ingredients = ref([""]);
-const instructions = ref([""]);
+const title = ref('')
+const description = ref('')
+const ingredients = ref([''])
+const instructions = ref([''])
 
 const addIngredient = () => {
-  ingredients.value.push("");
-};
+  ingredients.value.push('')
+}
 const addInstruction = () => {
-  instructions.value.push("");
-};
+  instructions.value.push('')
+}
 
 const createRecipe = async () => {
-  const { error, pending } = await useFetch("/api/recipes", {
-    method: "POST",
+  const { error, isFetching } = await useFetch('/api/recipes', {
+    method: 'POST',
     body: {
       title: title.value,
       description: description.value,
       ingredients: ingredients.value,
-      instructions: instructions.value,
-    },
-  });
-};
+      instructions: instructions.value
+    }
+  })
+}
 </script>

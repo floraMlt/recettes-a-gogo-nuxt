@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h1 class="text-3xl font-bold text-center">
+    <h1 class="text-center text-3xl font-bold">
       Bienvenue sur Recette à gogo !
     </h1>
 
     <div>
-      <div v-if="pending">
+      <div v-if="isFetching">
         <Loader />
       </div>
 
@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-const { data, pending, error, refresh } = useFetch('/api/users')
+const { data, isFetching, error, refresh } = useFetch('/api/users')
 
 definePageMeta({
   title: 'Home Page',
