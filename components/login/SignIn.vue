@@ -1,16 +1,16 @@
 <template>
   <form
-    class="w-full h-full flex flex-col justify-around gap-2 p-4"
+    class="flex h-full w-full flex-col justify-around gap-2 p-4"
     @submit.prevent="onSignIn"
   >
-    <div class="flex flex-row justify-center items-center gap-1 my-1">
+    <div class="my-1 flex flex-row items-center justify-center gap-1">
       <User class="size-5" />
-      <h1 class="text-lg text-center">Connexion</h1>
+      <h1 class="text-center text-lg">Connexion</h1>
     </div>
 
-    <InputText name="email" placeholder="Email" />
+    <CustomInput name="email" placeholder="Email" />
 
-    <InputText name="password" type="password" placeholder="Mot de passe" />
+    <CustomInput name="password" type="password" placeholder="Mot de passe" />
 
     <Button size="lg" type="submit" class="mt-2 hover:cursor-pointer">
       Se connecter
@@ -24,7 +24,7 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 
-import InputText from '@/components/inputs/InputText'
+import CustomInput from '@/components/inputs/CustomInput'
 
 const { signIn } = useAuth()
 
@@ -38,7 +38,7 @@ const { values, errors, handleSubmit } = useForm({
   validationSchema
 })
 
-const onSignIn = handleSubmit(values => {
+const onSignIn = handleSubmit((values) => {
   console.log('Signing in with', values)
   signIn('credentials', values)
 })

@@ -1,20 +1,24 @@
 <template>
-  <form class="w-full h-full flex flex-col gap-2 p-4" @submit="onSignUp">
-    <div class="flex flex-row justify-center items-center gap-3 my-1">
+  <form class="flex h-full w-full flex-col gap-2 p-4" @submit="onSignUp">
+    <div class="my-1 flex flex-row items-center justify-center gap-3">
       <User class="size-5" />
 
-      <h1 class="text-lg text-center">Inscription</h1>
+      <h1 class="text-center text-lg">Inscription</h1>
     </div>
 
     <div class="flex justify-between gap-2">
-      <InputText name="firstName" placeholder="Prénom" input-class="w-[48%]" />
+      <CustomInput
+        name="firstName"
+        placeholder="Prénom"
+        input-class="w-[48%]"
+      />
 
-      <InputText name="lastName" placeholder="Nom" input-class="w-[48%]" />
+      <CustomInput name="lastName" placeholder="Nom" input-class="w-[48%]" />
     </div>
 
-    <InputText name="email" placeholder="Email" />
+    <CustomInput name="email" placeholder="Email" />
 
-    <InputText name="password" type="password" placeholder="Mot de passe" />
+    <CustomInput name="password" type="password" placeholder="Mot de passe" />
 
     <Button size="lg" type="submit" class="mt-2 hover:cursor-pointer">
       Créer un compte
@@ -23,13 +27,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { User } from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 
-import InputText from '@/components/inputs/InputText'
+import CustomInput from '@/components/inputs/CustomInput'
 
 const { signIn } = useAuth()
 
@@ -47,7 +50,7 @@ const { values, errors, handleSubmit } = useForm({
   validationSchema
 })
 
-const onSignUp = handleSubmit(async values => {
+const onSignUp = handleSubmit(async (values) => {
   try {
     await $fetch('/api/users', {
       method: 'POST',

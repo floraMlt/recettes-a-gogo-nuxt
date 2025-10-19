@@ -27,5 +27,4 @@ userId.value = userData.value?.user?.id
 const { data, isFetching, error } = useFetch('/api/recipes', {
   query: { authorId: userId.value }
 })
-
 </script>

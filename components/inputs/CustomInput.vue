@@ -7,6 +7,7 @@
         <Input
           :type="type"
           :placeholder="placeholder"
+          class="bg-white"
           v-bind="componentField"
         />
       </FormControl>
