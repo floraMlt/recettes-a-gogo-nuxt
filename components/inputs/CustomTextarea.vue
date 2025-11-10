@@ -1,15 +1,15 @@
 <template>
   <FormField v-slot="{ componentField }" :name="name">
-    <FormItem v-auto-animate class="flex items-center">
+    <FormItem v-auto-animate :class="inputClass">
+      <FormLabel>{{ label }}</FormLabel>
+
       <FormControl>
-        <Checkbox
+        <Textarea
           :placeholder="placeholder"
-          class="bg-white hover:cursor-pointer"
+          class="bg-white"
           v-bind="componentField"
         />
       </FormControl>
-
-      <FormLabel>{{ label }}</FormLabel>
 
       <FormMessage />
     </FormItem>
@@ -32,7 +32,15 @@ const props = defineProps({
     type: String,
     required: true
   },
+  placeholder: {
+    type: String,
+    default: ''
+  },
   label: {
+    type: String,
+    default: ''
+  },
+  inputClass: {
     type: String,
     default: ''
   }

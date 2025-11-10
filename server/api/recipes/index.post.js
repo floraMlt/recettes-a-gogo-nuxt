@@ -1,20 +1,26 @@
-import { Category } from "@prisma/client"
-import prisma from "../../utils/prisma"
-import { z } from "zod"
+import { Category } from '@prisma/client'
+import prisma from '../../utils/prisma'
+import { z } from 'zod'
 
 const registerRecipesSchema = z.object({
   title: z.string().min(2),
   description: z.string().min(2),
-  ingredients: z.array(z.object({
-    ingredientId: z.string(),
-    quantity: z.number().min(0),
-  })).min(1),
+  ingredients: z
+    .array(
+      z.object({
+        ingredientId: z.string(),
+        quantity: z.number().min(0)
+      })
+    )
+    .min(1),
   instructions: z.array(z.string().min(2)).min(1),
   category: z.nativeEnum(Category),
   preparationTime: z.number().optional(),
   cookingTime: z.number().optional(),
   isPublic: z.boolean().default(false),
-  favorites: z.array(z.string()).optional()
+  favorites: z.array(z.string()).optional(),
+  tags: z.array(z.string()).optional(),
+  authorId: z.string()
 })
 
 export default defineEventHandler(async (request) => {
@@ -25,11 +31,23 @@ export default defineEventHandler(async (request) => {
   if (!parsed.success) {
     throw createError({
       statusCode: 400,
-      message: parsed.error.errors.map((err) => err.message).join(", ")
+      message: parsed.error.errors.map((err) => err.message).join(', ')
     })
   }
 
-  const { title, description, instructions, category, ingredients, favorites, preparationTime, cookingTime, isPublic } = parsed.data
+  const {
+    title,
+    description,
+    instructions,
+    category,
+    ingredients,
+    favorites,
+    preparationTime,
+    cookingTime,
+    isPublic,
+    tags,
+    authorId
+  } = parsed.data
 
   const newRecipe = await prisma.$transaction(async (tx) => {
     const recipe = await tx.recipe.create({
@@ -37,16 +55,29 @@ export default defineEventHandler(async (request) => {
         title,
         description,
         instructions,
-        authorId: 'cmd3efb4y0000j668lz6gw4bt',
+        authorId,
         category,
         favorites,
         preparationTime,
         cookingTime,
-        isPublic
+        isPublic,
+        tags:
+          tags && tags.length > 0
+            ? {
+                create: tags.map((tagName) => ({
+                  tag: {
+                    connectOrCreate: {
+                      where: { name: tagName },
+                      create: { name: tagName }
+                    }
+                  }
+                }))
+              }
+            : undefined
       }
     })
 
-    const recipeIngredients = ingredients.map(ingredient => ({
+    const recipeIngredients = ingredients.map((ingredient) => ({
       ingredientId: ingredient.ingredientId,
       quantity: ingredient.quantity,
       recipeId: recipe.id
@@ -71,9 +102,15 @@ export default defineEventHandler(async (request) => {
       }
     })
 
+    const recipeTags = await tx.recipeTag.findMany({
+      where: { recipeId: recipe.id },
+      include: { tag: true }
+    })
+
     return {
       ...recipe,
-      ingredients: recipeIngredientsWithDetails
+      ingredients: recipeIngredientsWithDetails,
+      tags: recipeTags.map((t) => t.tag)
     }
   })
 

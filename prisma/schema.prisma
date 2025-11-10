@@ -79,7 +79,7 @@ model Ingredient {
 }
 
 model RecipeIngredient {
-  id           String   @id @default(cuid())
+  id           String @id @default(cuid())
   recipeId     String
   ingredientId String
   quantity     Float

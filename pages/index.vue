@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-center text-3xl font-bold">
+    <h1 class="pb-10 text-center text-3xl font-bold">
       Bienvenue sur Recette à gogo !
     </h1>
 
