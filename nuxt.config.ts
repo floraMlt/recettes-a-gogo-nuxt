@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     baseURL: '/api/auth'
   },
   css: ['~/assets/main.css'],
-    vite: {
+  vite: {
     plugins: [
       tailwindcss(),
     ],

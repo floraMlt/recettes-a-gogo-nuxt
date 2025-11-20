@@ -3,8 +3,8 @@ import prisma from '../../utils/prisma'
 import { z } from 'zod'
 
 const registerRecipesSchema = z.object({
-  title: z.string().min(2),
-  description: z.string().min(2),
+  title: z.string().min(2).optional(),
+  description: z.string().min(2).optional(),
   ingredients: z
     .array(
       z.object({
@@ -12,18 +12,21 @@ const registerRecipesSchema = z.object({
         quantity: z.number().min(0)
       })
     )
-    .min(1),
-  instructions: z.array(z.string().min(2)).min(1),
-  category: z.nativeEnum(Category),
+    .optional(),
+  instructions: z.array(z.string().min(2)).optional(),
+  category: z.nativeEnum(Category).optional(),
   preparationTime: z.number().optional(),
   cookingTime: z.number().optional(),
-  isPublic: z.boolean().default(false),
-  favorites: z.array(z.string()).optional()
+  isPublic: z.boolean().optional(),
+  favorites: z.boolean().optional(),
+  userId: z.string().optional(),
+  authorId: z.string().optional()
 })
 
 export default defineEventHandler(async (request) => {
   const id = getRouterParam(request, 'id')
   const body = await readBody(request)
+  console.log('Request body:', body)
 
   const parsed = registerRecipesSchema.safeParse(body)
 
@@ -34,52 +37,116 @@ export default defineEventHandler(async (request) => {
     })
   }
 
-  const {
-    title,
-    description,
-    instructions,
-    category,
-    ingredients,
-    favorites,
-    preparationTime,
-    cookingTime,
-    isPublic
-  } = parsed.data
+  const data = parsed.data
 
-  const newRecipe = await prisma.$transaction(async (tx) => {
-    // ici il faut mettre que les champs à modifier et pas tous les champs sinon ils vont être écrasés
+  console.log('Updating recipe with data:', data)
+
+  const dataToUpdate = {}
+  const updatableFields = [
+    'title',
+    'description',
+    'instructions',
+    'category',
+    'preparationTime',
+    'cookingTime',
+    'isPublic',
+    'authorId'
+  ]
+
+  for (const field of updatableFields) {
+    if (data[field] !== undefined) {
+      dataToUpdate[field] = data[field]
+    }
+  }
+
+  const updatedRecipe = await prisma.$transaction(async (tx) => {
     const recipe = await tx.recipe.update({
       where: { id },
-      data: {
-        title,
-        description,
-        instructions,
-        authorId: 'cmd3efb4y0000j668lz6gw4bt',
-        category,
-        favorites,
-        preparationTime,
-        cookingTime,
-        isPublic
+      data: dataToUpdate
+    })
+
+    if (data.userId !== undefined && data.favorites !== undefined) {
+      if (data.favorites) {
+        await prisma.favorite.upsert({
+          where: {
+            userId_recipeId: {
+              userId: data.userId,
+              recipeId: id
+            }
+          },
+          update: {},
+          create: {
+            userId: data.userId,
+            recipeId: id
+          }
+        })
+      } else {
+        await prisma.favorite.deleteMany({
+          where: {
+            userId: data.userId,
+            recipeId: id
+          }
+        })
       }
-    })
+    }
 
-    const recipeIngredients = ingredients.map((ingredient) => ({
-      ingredientId: ingredient.ingredientId,
-      quantity: ingredient.quantity,
-      recipeId: recipe.id
-    }))
+    if (data.ingredients !== undefined) {
+      const newIngredients = data.ingredients
 
-    // get les recipe ingredients actuels et faire un comparatif pour chaque pour voir quoi faire
-    // boucle sur les ingrédients et
-    // regarde liste d'ingredients, s'il y a des nouveaux ingrédients, des ingrédients supprimés, modifiés (quantity) ->
-    // regrouper tous les ingrédients à update, ceux à delete et ceux à créér et faire un requête prisma pour chaque cas
-    await tx.recipeIngredient.createMany({
-      data: recipeIngredients
-    })
+      const existing = await tx.recipeIngredient.findMany({
+        where: { recipeId: id }
+      })
 
-    // A voir pour ne pas refaire un get et déduire toutes les infos actuelles
-    const recipeIngredientsWithDetails = await tx.recipeIngredient.findMany({
-      where: { recipeId: recipe.id },
+      const existingMap = new Map(existing.map((i) => [i.ingredientId, i]))
+      const newMap = new Map(newIngredients.map((i) => [i.ingredientId, i]))
+
+      const toCreate = []
+      const toUpdate = []
+      const toDelete = []
+
+      for (const ing of newIngredients) {
+        if (!existingMap.has(ing.ingredientId)) {
+          toCreate.push({
+            ingredientId: ing.ingredientId,
+            quantity: ing.quantity,
+            recipeId: id
+          })
+        }
+      }
+
+      for (const ing of existing) {
+        if (!newMap.has(ing.ingredientId)) {
+          toDelete.push(ing.id)
+        }
+      }
+
+      for (const ing of newIngredients) {
+        const current = existingMap.get(ing.ingredientId)
+        if (current && current.quantity !== ing.quantity) {
+          toUpdate.push({ id: current.id, quantity: ing.quantity })
+        }
+      }
+
+      if (toCreate.length > 0) {
+        await tx.recipeIngredient.createMany({ data: toCreate })
+      }
+
+      for (const u of toUpdate) {
+        await tx.recipeIngredient.update({
+          where: { id: u.id },
+          data: { quantity: u.quantity }
+        })
+      }
+
+      if (toDelete.length > 0) {
+        await tx.recipeIngredient.deleteMany({
+          where: { id: { in: toDelete } }
+        })
+      }
+    }
+
+    const recipeIngredients = await tx.recipeIngredient.findMany({
+      where: { recipeId: id },
       select: {
         id: true,
         ingredient: {
@@ -95,9 +162,9 @@ export default defineEventHandler(async (request) => {
 
     return {
       ...recipe,
-      ingredients: recipeIngredientsWithDetails
+      ingredients: recipeIngredients
     }
   })
 
-  return newRecipe
+  return updatedRecipe
 })

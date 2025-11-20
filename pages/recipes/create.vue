@@ -128,6 +128,8 @@ import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 import { Trash2 } from 'lucide-vue-next'
 import { useAuth } from '#imports'
+import { toast } from 'vue-sonner'
+import { useRouter } from 'vue-router'
 
 import CustomInput from '@/components/inputs/CustomInput'
 import CustomMultiSelect from '@/components/inputs/CustomMultiSelect'
@@ -138,6 +140,8 @@ import CustomNumber from '@/components/inputs/CustomNumber'
 import CustomCheckbox from '@/components/inputs/CustomCheckbox'
 
 import categoriesName from '@/constants/categoriesName'
+
+const router = useRouter()
 
 const ingredients = ref([])
 const fetchedIngredients = ref([])
@@ -188,7 +192,8 @@ const validationSchema = toTypedSchema(
       })
       .optional(),
     category: z.string().optional(),
-    tags: z.array(z.string()).optional()
+    tags: z.array(z.string()).optional(),
+    isPublic: z.boolean().default(false)
   })
 )
 
@@ -198,7 +203,6 @@ const { values, setFieldValue } = useForm({
 
 const createRecipe = async () => {
   const userId = session.value?.user?.id
-  console.log('Creating recipe for user:', userId)
 
   const formattedInstructions = instructions.value.filter(
     (i) => i.trim().length > 0
@@ -218,7 +222,7 @@ const createRecipe = async () => {
     }))
   }
 
-  const { error, isFetching: isPosting } = await useFetch('/api/recipes', {
+  const { error, data: createdRecipe } = await useFetch('/api/recipes', {
     method: 'POST',
     body: {
       title: values?.title,
@@ -231,10 +235,24 @@ const createRecipe = async () => {
       cookingTime: values?.cookingTime ? parseInt(values?.cookingTime) : null,
       category: values?.category || null,
       tags: values?.tags || [],
-      isPublic: values?.isPublic || false,
+      isPublic: values?.isPublic,
       authorId: userId
     }
   })
+
+  if (!error.value) {
+    router.push(`/recipes/${createdRecipe.value.id}`)
+
+    toast('Recette créée', {
+      description: 'Votre recette a bien été ajoutée.',
+      action: {
+        label: 'Ajouter une nouvelle recette',
+        onClick: () => {
+          router.push('/recipes/create')
+        }
+      }
+    })
+  }
 }
 
 const getIngredientData = (id) => {

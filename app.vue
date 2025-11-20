@@ -1,8 +1,9 @@
 <template>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-
+  <ClientOnly>
+    <Toaster />
+  </ClientOnly>
 </template>
- 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-secondary h-screen">
     <NavMenu />
 
     <slot />

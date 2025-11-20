@@ -5,10 +5,10 @@
 
       <FormControl>
         <Input
+          v-bind="componentField"
           :type="type"
           :placeholder="placeholder"
-          class="bg-white"
-          v-bind="componentField"
+          class="bg-secondary-100"
         />
       </FormControl>
 

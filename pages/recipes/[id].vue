@@ -14,7 +14,12 @@
 
         <div class="flex">
           <Pen class="mr-2 hover:cursor-pointer" />
-          <Star class="hover:cursor-pointer" @click="updateFavorites" />
+          <Star
+            :fill="recipe.favorite ? '#fbad71' : 'none'"
+            color="#fbad71"
+            class="hover:cursor-pointer"
+            @click="updateFavorites"
+          />
         </div>
       </CardHeader>
 
@@ -62,18 +67,19 @@ const route = useRoute()
 const recipeId = route.params.id
 const userId = ref(null)
 
-const { data: userData } = useAuth()
-userId.value = userData.value?.id
+const { data: userData } = await useAuth()
+userId.value = userData.value?.user?.id
 
-const { data: recipe, isFetching } = await useFetch(`/api/recipes/${recipeId}`)
+const { data: recipe, isFetching } = await useFetch(
+  `/api/recipes/${recipeId}?userId=${userId.value}`
+)
 
-
-const updateFavorites = async (value) => {
+const updateFavorites = async () => {
   const { data, status, error, isFetching } = useFetch(
-    `/api/recipes/${recipeId}/favorite`,
+    `/api/recipes/${recipeId}`,
     {
       method: 'PATCH',
-      body: { favorites: !recipe.value.favorite }
+      body: { favorites: !recipe.value.favorite, userId: userId.value }
     }
   )
 }

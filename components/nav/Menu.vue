@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full flex items-center bg-stone-50 py-2 mb-6">
-    <NavigationMenu class="flex mx-auto">
+  <div class="fixed z-10 mb-6 flex w-full items-center bg-stone-50 py-2">
+    <NavigationMenu class="mx-auto flex">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuLink href="/" :class="navigationMenuTriggerStyle()">
@@ -12,19 +12,24 @@
           <NavigationMenuTrigger>Les recettes</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul
-              class="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]"
+              class="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2
+                lg:w-[600px]"
             >
               <li v-for="component in components" :key="component.title">
                 <NavigationMenuLink as-child>
                   <a
                     :href="component.href"
-                    class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                    class="hover:bg-accent hover:text-accent-foreground
+                      focus:bg-accent focus:text-accent-foreground block
+                      space-y-1 rounded-md p-3 leading-none no-underline
+                      transition-colors outline-none select-none"
                   >
-                    <div class="text-sm font-medium leading-none">
+                    <div class="text-sm leading-none font-medium">
                       {{ component.title }}
                     </div>
                     <p
-                      class="line-clamp-2 text-sm leading-snug text-muted-foreground"
+                      class="text-muted-foreground line-clamp-2 text-sm
+                        leading-snug"
                     >
                       {{ component.description }}
                     </p>

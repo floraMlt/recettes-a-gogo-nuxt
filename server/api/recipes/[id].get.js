@@ -1,6 +1,8 @@
 import prisma from '../../utils/prisma'
 
 export default defineEventHandler(async (event) => {
+  const userId = getQuery(event).userId
+
   const recipeItem = await prisma.recipe.findUnique({
     where: {
       id: event.context.params.id
@@ -26,10 +28,18 @@ export default defineEventHandler(async (event) => {
           }
         }
       },
-      tags: true,
-      favorites: true
+      favorites: {
+        where: { userId: userId },
+        select: { userId: true }
+      }
     }
   })
 
-  return recipeItem
+  if (!recipeItem)
+    throw createError({ statusCode: 404, message: 'Recipe not found' })
+
+  return {
+    ...recipeItem,
+    favorite: recipeItem.favorites.length > 0
+  }
 })

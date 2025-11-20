@@ -3,9 +3,9 @@
     <FormItem v-auto-animate class="flex items-center">
       <FormControl>
         <Checkbox
-          :placeholder="placeholder"
           class="bg-white hover:cursor-pointer"
-          v-bind="componentField"
+          :checked="componentField.value"
+          @update:checked="(val) => componentField.onChange(Boolean(val))"
         />
       </FormControl>
 

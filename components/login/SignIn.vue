@@ -1,11 +1,11 @@
 <template>
   <form
-    class="flex h-full w-full flex-col justify-around gap-2 p-4"
+    class="flex h-full w-full flex-col justify-around gap-2 py-4"
     @submit.prevent="onSignIn"
   >
     <div class="my-1 flex flex-row items-center justify-center gap-1">
-      <User class="size-5" />
-      <h1 class="text-center text-lg">Connexion</h1>
+      <User class="text-primary-700 size-5" />
+      <h1 class="text-primary-700 text-center text-lg">Connexion</h1>
     </div>
 
     <CustomInput name="email" placeholder="Email" />

@@ -6,7 +6,7 @@
       <div v-if="isFetching">Chargement...</div>
       <div v-else-if="error">Erreur : {{ error.message }}</div>
       <div v-else>
-        <ul class="flex justify-center gap-4">
+        <ul class="flex flex-wrap justify-center gap-4">
           <RecipesCard
             v-for="recipe in data"
             :key="recipe.id"
