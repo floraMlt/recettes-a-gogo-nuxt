@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Tabs default-value="account" class="w-[450px]">
+    <Tabs default-value="login" class="w-[450px]">
       <TabsList class="grid w-full grid-cols-2">
         <TabsTrigger value="login" class="hover:cursor-pointer">
           Connexion

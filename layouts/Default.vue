@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-secondary h-screen">
+  <div class="bg-secondary h-full min-h-screen">
     <NavMenu />
 
     <slot />

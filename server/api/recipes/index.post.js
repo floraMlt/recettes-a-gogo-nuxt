@@ -4,7 +4,7 @@ import { z } from 'zod'
 
 const registerRecipesSchema = z.object({
   title: z.string().min(2),
-  description: z.string().min(2),
+  description: z.string().min(2).optional(),
   ingredients: z
     .array(
       z.object({

@@ -1,6 +1,6 @@
 <template>
   <Card
-    class="w-[250px] hover:shadow-md hover:cursor-pointer"
+    class="w-[250px] shadow-none hover:cursor-pointer"
     @click="goToRecipeDetails"
   >
     <CardHeader>
@@ -8,14 +8,14 @@
       <CardDescription>{{ recipe.description }}</CardDescription>
     </CardHeader>
 
-    <CardContent class="flex flex-column">
-      <div v-if="recipe.preparationTime" class="flex mr-4">
-        <AlarmClock class="size-5 mr-1.5" />
+    <CardContent class="flex-column flex">
+      <div v-if="recipe.preparationTime" class="mr-4 flex">
+        <AlarmClock class="mr-1.5 size-5" />
         {{ convertMinToHours(recipe.preparationTime) }}
       </div>
 
       <div v-if="recipe.cookingTime" class="flex">
-        <CookingPot class="size-5 mr-1.5" />
+        <CookingPot class="mr-1.5 size-5" />
         {{ convertMinToHours(recipe.cookingTime) }}
       </div>
     </CardContent>

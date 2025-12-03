@@ -1,12 +1,14 @@
 <template>
   <div
-    class="direction-column flex h-full flex-col items-center justify-center pb-8"
+    class="direction-column flex h-full flex-col items-center justify-center
+      pb-8"
   >
-    <h1 class="mt-2 mb-7 text-center text-2xl">Nouvelle recette</h1>
-
+    <h1 class="sm:mt-[100px] mb-7 text-center text-2xl mt-[10vh] font-playfair">Edition de la recette</h1>
+    
     <form
-      class="grid w-fit max-w-[80vw] min-w-[70%] grid-cols-1 gap-x-8 gap-y-4 rounded-xl bg-white p-8 text-sm md:grid-cols-2"
-      @submit.prevent="createRecipe"
+      class="grid w-fit max-w-[80vw] min-w-[70%] grid-cols-1 gap-x-8 gap-y-4
+        rounded-xl bg-white p-8 text-sm md:grid-cols-2"
+      @submit.prevent="editRecipe"
     >
       <CustomInput
         name="title"
@@ -25,12 +27,12 @@
       <CustomInput name="cookingTime" label="Temps de cuisson (en minutes)" />
 
       <CustomSelect
+        v-model="values.category"
         name="category"
         label="Catégorie"
         placeholder="Sélectionner une catégorie"
         input-class="w-full"
         :options="categoriesList"
-        @change="(e) => setFieldValue('category', e.target.value)"
       />
 
       <CustomTagsInput name="tags" label="Tags" placeholder="Tags" />
@@ -40,30 +42,29 @@
         <Loader v-if="isFetching" />
         <div v-else>
           <CustomMultiSelect
+            v-model="selectedIngredientIds"
             name="ingredients"
             placeholder="Sélectionner des ingrédients"
             :options="fetchedIngredients"
-            @change="
-              (value) => {
-                ingredients = value
-                setFieldValue('ingredients', value)
-              }
-            "
           />
 
           <div
             v-for="ingredient in ingredients"
             v-if="ingredients.length"
-            :key="`ingredient-${ingredient}`"
+            :key="`ingredient-${getIngredientData(ingredient.ingredientId).title}`"
             class="mt-2 ml-5 flex items-center gap-2"
           >
             <div class="m-w-fit w-25">
-              <CustomNumber :name="`quantity-${ingredient}`" label="Quantité" />
+              <CustomNumber
+                v-model="ingredient.quantity"
+                :name="`quantity-${getIngredientData(ingredient.ingredientId).title}`"
+                label="Quantité"
+              />
             </div>
 
-            <p v-if="getIngredientData(ingredient)" class="mt-5">
+            <p v-if="ingredient" class="mt-5">
               {{
-                `${getIngredientData(ingredient).title} (${units[getIngredientData(ingredient).unit]})`
+                `${getIngredientData(ingredient.ingredientId).title} (${units[getIngredientData(ingredient.ingredientId).unit]})`
               }}
             </p>
           </div>
@@ -89,7 +90,8 @@
 
             <Trash2
               v-if="instructions.length > 1 && index > 0"
-              class="mt-3 size-4.5 text-red-600 hover:cursor-pointer hover:opacity-80"
+              class="mt-3 size-4.5 text-red-600 hover:cursor-pointer
+                hover:opacity-80"
               @click="removeInstruction(index)"
             />
           </div>
@@ -111,7 +113,7 @@
           class="mt-5 ml-auto w-[100px] hover:cursor-pointer"
           type="submit"
         >
-          Créer
+          Éditer
         </Button>
       </div>
     </form>
@@ -119,7 +121,7 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, watch } from 'vue'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
@@ -142,8 +144,10 @@ import units from '@/constants/Units'
 const router = useRouter()
 
 const ingredients = ref([])
+const selectedIngredientIds = ref([])
 const fetchedIngredients = ref([])
 const instructions = ref([''])
+const initialRecipe = ref({})
 
 const categoriesList = Object.entries(categoriesName).map(([key, value]) => ({
   title: value,
@@ -152,11 +156,13 @@ const categoriesList = Object.entries(categoriesName).map(([key, value]) => ({
 
 const { data, isFetching } = useFetch('/api/ingredients')
 const { data: session } = useAuth()
+const { data: recipeData } = await useFetch(
+  `/api/recipes/${router.currentRoute.value.params.id}`
+)
+const formInitialized = ref(false)
 
 watchEffect(() => {
-  if (data.value) {
-    fetchedIngredients.value = data.value
-  }
+  if (data.value) fetchedIngredients.value = data.value
 })
 
 const validationSchema = toTypedSchema(
@@ -183,61 +189,121 @@ const validationSchema = toTypedSchema(
   })
 )
 
-const { values, setFieldValue } = useForm({
+const { values, resetForm } = useForm({
   validationSchema
 })
 
-const createRecipe = async () => {
-  const userId = session.value?.user?.id
+watchEffect(() => {
+  if (!recipeData.value || formInitialized.value) return
 
-  const formattedInstructions = instructions.value.filter(
-    (i) => i.trim().length > 0
+  const recipe = recipeData.value
+  initialRecipe.value = JSON.parse(
+    JSON.stringify({
+      title: recipe.title,
+      description: recipe.description,
+      preparationTime: recipe.preparationTime,
+      cookingTime: recipe.cookingTime,
+      category: recipe.category,
+      tags: recipe.tags?.map((t) => t.tag.name) || [],
+      isPublic: recipe.isPublic,
+      ingredients:
+        recipe.ingredients?.map((i) => ({
+          ingredientId: i.ingredient.id,
+          quantity: i.quantity
+        })) || [],
+      instructions: recipe.instructions || [],
+      authorId: recipe.authorId
+    })
   )
 
-  let formattedIngredients = []
+  ingredients.value = JSON.parse(
+    JSON.stringify(initialRecipe.value.ingredients)
+  )
 
-  if (ingredients.value.length > 0) {
-    const quantities = ingredients.value.map((ingredient) => {
-      const quantityValue = values?.[`quantity-${ingredient}`]
-      return quantityValue ? quantityValue : null
-    })
+  selectedIngredientIds.value = initialRecipe.value.ingredients.map(
+    (i) => i.ingredientId
+  )
 
-    formattedIngredients = ingredients.value.map((ingredient, index) => ({
-      ingredientId: ingredient,
-      quantity: quantities[index]
-    }))
-  }
+  instructions.value = JSON.parse(
+    JSON.stringify(initialRecipe.value.instructions)
+  )
 
-  const { error, data: createdRecipe } = await useFetch('/api/recipes', {
-    method: 'POST',
-    body: {
-      title: values?.title,
-      description: values?.description,
-      ingredients: formattedIngredients,
-      instructions: formattedInstructions,
-      preparationTime: values?.preparationTime
-        ? parseInt(values?.preparationTime)
-        : null,
-      cookingTime: values?.cookingTime ? parseInt(values?.cookingTime) : null,
-      category: values?.category || null,
-      tags: values?.tags || [],
-      isPublic: values?.isPublic,
-      authorId: userId
+  resetForm({
+    values: {
+      ...initialRecipe.value,
+      preparationTime: recipe.preparationTime
+        ? recipe.preparationTime.toString()
+        : '',
+      cookingTime: recipe.cookingTime ? recipe.cookingTime.toString() : ''
     }
   })
 
-  if (!error.value) {
-    router.push(`/recipes/${createdRecipe.value.id}`)
+  formInitialized.value = true
+})
 
-    toast('Recette créée', {
-      description: 'Votre recette a bien été ajoutée.',
-      action: {
-        label: 'Ajouter une nouvelle recette',
-        onClick: () => {
-          router.push('/recipes/create')
-        }
+watch(
+  selectedIngredientIds,
+  (newIds) => {
+    if (!Array.isArray(newIds)) {
+      newIds = newIds ? [newIds] : []
+    }
+
+    newIds.forEach((id) => {
+      if (!ingredients.value.some((it) => it.ingredientId === id)) {
+        ingredients.value.push({ ingredientId: id, quantity: null })
       }
     })
+  },
+  { immediate: true }
+)
+
+const diffObject = (initial, current) => {
+  const result = {}
+
+  for (const key in current) {
+    if (JSON.stringify(current[key]) !== JSON.stringify(initial[key])) {
+      result[key] = current[key]
+    }
+  }
+
+  return result
+}
+
+const editRecipe = async () => {
+  const userId = session.value?.user?.id
+
+  const currentRecipe = {
+    title: values.title,
+    description: values.description,
+    preparationTime: values.preparationTime
+      ? Number(values.preparationTime)
+      : null,
+    cookingTime: values.cookingTime ? Number(values.cookingTime) : null,
+    category: values.category || null,
+    tags: values.tags || [],
+    isPublic: values.isPublic,
+    ingredients: ingredients.value.map((i) => ({
+      ingredientId: i.ingredientId,
+      quantity:
+        i.quantity !== '' && i.quantity != null ? Number(i.quantity) : null
+    })),
+    instructions: instructions.value.filter((i) => i.trim().length > 0),
+    authorId: userId
+  }
+
+  const payload = diffObject(initialRecipe.value, currentRecipe)
+
+  const { error, data: updatedRecipe } = await useFetch(
+    `/api/recipes/${router.currentRoute.value.params.id}`,
+    {
+      method: 'PATCH',
+      body: payload
+    }
+  )
+
+  if (!error.value) {
+    router.push(`/recipes/${updatedRecipe.value.id}`)
+    toast('Recette éditée', { description: 'Votre recette a bien été éditée.' })
   }
 }
 

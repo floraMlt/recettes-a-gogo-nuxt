@@ -16,14 +16,23 @@ export default defineEventHandler(async (event) => {
       preparationTime: true,
       cookingTime: true,
       category: true,
-      tags: true,
+      tags: {
+        select: {
+          tag: {
+            select: {
+              name: true
+            }
+          }
+        }
+      },
       ingredients: {
         select: {
           quantity: true,
           ingredient: {
             select: {
               id: true,
-              title: true
+              title: true,
+              unit: true
             }
           }
         }

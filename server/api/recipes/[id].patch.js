@@ -26,8 +26,6 @@ const registerRecipesSchema = z.object({
 export default defineEventHandler(async (request) => {
   const id = getRouterParam(request, 'id')
   const body = await readBody(request)
-  console.log('Request body:', body)
-
   const parsed = registerRecipesSchema.safeParse(body)
 
   if (!parsed.success) {
@@ -38,8 +36,6 @@ export default defineEventHandler(async (request) => {
   }
 
   const data = parsed.data
-
-  console.log('Updating recipe with data:', data)
 
   const dataToUpdate = {}
   const updatableFields = [

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h5 class="mb-1.5 text-sm font-medium">{{ label }}</h5>
+    <p class="mb-1.5 text-sm font-medium">{{ label }}</p>
 
-    <TagsInput v-model="options">
-      <TagsInputItem v-for="item in options" :key="item" :value="item">
+    <TagsInput v-model="fieldValue">
+      <TagsInputItem v-for="item in fieldValue" :key="item" :value="item">
         <TagsInputItemText />
         <TagsInputItemDelete />
       </TagsInputItem>
@@ -38,5 +38,5 @@ const props = defineProps({
   }
 })
 
-const { value: options } = useField(props.name)
+const { value: fieldValue } = useField(props.name)
 </script>

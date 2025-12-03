@@ -4,7 +4,13 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint', '@sidebase/nuxt-auth', 'shadcn-nuxt'],
+  modules: [
+    '@nuxt/eslint',
+    '@sidebase/nuxt-auth',
+    'shadcn-nuxt',
+    '@nuxt/image',
+    '@nuxtjs/google-fonts'
+  ],
   runtimeConfig: {
     baseURL: '/api/auth'
   },
@@ -22,5 +28,12 @@ export default defineNuxtConfig({
   shadcn: {
     prefix: '',
     componentDir: './components/ui'
+  },
+  googleFonts: {
+    families: {
+      'Playfair Display': [400, 700],
+      Lato: [400, 700]
+    },
+    display: 'swap'
   }
 })

@@ -61,7 +61,7 @@
     </NavigationMenu>
 
     <Button v-if="status == 'authenticated'" class="mr-2" @click="signOut()">
-      Sign Out
+      Déconnexion
     </Button>
   </div>
 </template>

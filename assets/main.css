@@ -22,6 +22,7 @@
   --color-primary-900: var(--primary-900);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
+  --color-secondary-light: var(--secondary-light);
   --color-secondary-100: var(--secondary-100);
   --color-secondary-200: var(--secondary-200);
   --color-secondary-300: var(--secondary-300);
@@ -79,6 +80,7 @@
   --primary-900: oklch(0.22 0.014 45);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.9589 0.0110 63.36);
+  --secondary-light: oklch(99.253% 0.005 67.259);
   --secondary-100: oklch(0.98 0.011 63.36);
   --secondary-200: oklch(0.93 0.011 63.36);
   --secondary-300: oklch(0.87 0.011 63.36);
@@ -155,5 +157,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Lato', sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
   }
 }

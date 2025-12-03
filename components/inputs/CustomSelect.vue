@@ -1,7 +1,11 @@
 <template>
   <div>
-    <Select class="bg-white">
-      <h5 class="mb-1.5 text-sm font-medium">{{ label }}</h5>
+    <Select
+      :model-value="value"
+      class="bg-white"
+      @update:model-value="onUpdate"
+    >
+      <p class="mb-1.5 text-sm font-medium">{{ label }}</p>
 
       <SelectTrigger class="w-full cursor-pointer bg-white">
         <SelectValue v-if="placeholder" :placeholder="placeholder" />
@@ -26,6 +30,8 @@
 </template>
 
 <script setup>
+import { useField } from 'vee-validate'
+
 const props = defineProps({
   name: {
     type: String,
@@ -44,4 +50,10 @@ const props = defineProps({
     required: true
   }
 })
+
+const { value, handleChange } = useField(props.name)
+
+const onUpdate = (val) => {
+  handleChange(val)
+}
 </script>
