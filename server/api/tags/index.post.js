@@ -1,5 +1,5 @@
-import prisma from "../../utils/prisma"
-import { z } from "zod"
+import prisma from '../../utils/prisma'
+import { z } from 'zod'
 
 const createTagSchema = z.object({
   name: z.string().min(2).max(100)
@@ -13,7 +13,7 @@ export default defineEventHandler(async (request) => {
   if (!parsed.success) {
     throw createError({
       statusCode: 400,
-      message: parsed.error.errors.map((err) => err.message).join(", ")
+      message: parsed.error.errors.map((err) => err.message).join(', ')
     })
   }
 

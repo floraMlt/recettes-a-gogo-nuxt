@@ -1,13 +1,13 @@
 <template>
   <div
-    class="direction-column flex h-full flex-col items-center justify-center
-      pb-8"
+    class="direction-column flex h-full flex-col items-center justify-center pb-8"
   >
-    <h1 class="sm:mt-[100px] mb-7 text-center text-2xl mt-[10vh] font-playfair">Edition de la recette</h1>
-    
+    <h1 class="font-playfair mt-[10vh] mb-7 text-center text-2xl sm:mt-[100px]">
+      Edition de la recette
+    </h1>
+
     <form
-      class="grid w-fit max-w-[80vw] min-w-[70%] grid-cols-1 gap-x-8 gap-y-4
-        rounded-xl bg-white p-8 text-sm md:grid-cols-2"
+      class="grid w-fit max-w-[80vw] min-w-[70%] grid-cols-1 gap-x-8 gap-y-4 rounded-xl bg-white p-8 text-sm md:grid-cols-2"
       @submit.prevent="editRecipe"
     >
       <CustomInput
@@ -90,8 +90,7 @@
 
             <Trash2
               v-if="instructions.length > 1 && index > 0"
-              class="mt-3 size-4.5 text-red-600 hover:cursor-pointer
-                hover:opacity-80"
+              class="mt-3 size-4.5 text-red-600 hover:cursor-pointer hover:opacity-80"
               @click="removeInstruction(index)"
             />
           </div>

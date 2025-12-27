@@ -1,15 +1,25 @@
 <template>
   <div class="relative flex h-screen flex-col items-center justify-center">
     <div
-      class="flex h-[50%] w-[80%] flex-col items-center justify-center rounded-2xl bg-[url('/img/background.jpg')] bg-cover bg-center py-10"
+      class="bg-secondary-light flex min-h-[50%] w-[80%] flex-col items-center justify-center rounded-2xl py-10"
     >
-      <h1 class="text-primary-700 pb-10 text-center text-3xl font-bold">
+      <h1 class="text-primary-700 mb-6 text-center text-3xl font-bold">
         Bienvenue sur Recette à gogo !
       </h1>
 
-      <Button v-if="status == 'unauthenticated'" @click="router.push('/login')">
-        Se connecter
-      </Button>
+      <h5 class="mb-3 text-center text-xl">Vos dernières recettes</h5>
+
+      <div v-if="fetchingRecipes">Chargement...</div>
+      <div v-else-if="recipesError">
+        Erreur lors du chargement des recettes.
+      </div>
+      <div v-else class="flex flex-wrap items-center justify-center gap-3">
+        <RecipesCard
+          v-for="recipe in recipes"
+          :key="`recipe-${recipe.id}`"
+          :recipe="recipe"
+        />
+      </div>
     </div>
 
     <NuxtImg
@@ -47,12 +57,14 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
-const { data, isFetching, error, refresh } = useFetch('/api/users')
-
-const router = useRouter()
-
-const { status } = useAuth()
+const { data } = useAuth()
+const {
+  data: recipes,
+  isFetching: fetchingRecipes,
+  error: recipesError
+} = useFetch('/api/recipes', {
+  query: { authorId: data.value?.user?.id, limit: 6, sort: 'recent' }
+})
 
 definePageMeta({
   title: 'Home Page',

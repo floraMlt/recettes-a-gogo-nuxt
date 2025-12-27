@@ -2,7 +2,9 @@
   <div
     class="flex-column relative flex h-full min-h-screen justify-center overflow-y-auto px-35 pb-20"
   >
-    <div class="mt-[100px] h-fit rounded-xl bg-white p-[50px]">
+    <div
+      class="bg-secondary-light mt-[100px] h-fit min-h-[50%] rounded-xl p-10"
+    >
       <h1 class="mb-10 text-center text-2xl">Les recettes</h1>
 
       <div>

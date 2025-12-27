@@ -1,12 +1,12 @@
-import prisma from "../../utils/prisma";
+import prisma from '../../utils/prisma'
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, "id")
+  const id = getRouterParam(event, 'id')
 
   if (!id) {
     throw createError({
       statusCode: 400,
-      message: "Missing tag ID in route"
+      message: 'Missing tag ID in route'
     })
   }
 
@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
       }
     })
 
-    return { message: "Tag deleted", tag: deletedTag }
+    return { message: 'Tag deleted', tag: deletedTag }
   } catch {
     throw createError({
       statusCode: 404,

@@ -31,7 +31,8 @@
 definePageMeta({
   title: 'Login Page',
   meta: [{ name: 'Login', content: 'This is the login page' }],
-  auth: { unauthenticatedOnly: true, navigateAuthenticatedTo: '/' }
+  auth: { unauthenticatedOnly: true, navigateAuthenticatedTo: '/' },
+  layout: 'login'
 })
 
 const { status } = useAuth()

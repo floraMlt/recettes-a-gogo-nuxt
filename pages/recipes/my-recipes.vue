@@ -28,8 +28,8 @@
       src="/img/recipe1.png"
       alt="Image d'illustration"
       format="webp"
-      sizes="(max-width: 800px) 80px, (max-width: 1500px) 10vw, 150px"
-      class="absolute top-[6%] right-[3%] w-[10%] max-w-[150px] min-w-20 rotate-300"
+      sizes="(max-width: 600px) 60px, (max-width: 1300px) 9vw, 130px"
+      class="absolute top-[6%] right-[3%] w-[9%] max-w-[130px] min-w-20 rotate-300"
     />
   </div>
 </template>

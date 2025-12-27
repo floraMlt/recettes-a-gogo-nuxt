@@ -1,6 +1,6 @@
-import prisma from "../../utils/prisma"
-import bcrypt from "bcrypt"
-import { z } from "zod"
+import prisma from '../../utils/prisma'
+import bcrypt from 'bcrypt'
+import { z } from 'zod'
 
 const updateUserSchema = z.object({
   email: z.string().email().optional(),
@@ -11,7 +11,7 @@ const updateUserSchema = z.object({
 })
 
 export default defineEventHandler(async (request) => {
-  const id = getRouterParam(request, "id")
+  const id = getRouterParam(request, 'id')
   const body = await readBody(request)
 
   const parsed = updateUserSchema.safeParse(body)
@@ -19,7 +19,7 @@ export default defineEventHandler(async (request) => {
   if (!parsed.success) {
     throw createError({
       statusCode: 400,
-      message: parsed.error.errors.map((err) => err.message).join(", ")
+      message: parsed.error.errors.map((err) => err.message).join(', ')
     })
   }
 

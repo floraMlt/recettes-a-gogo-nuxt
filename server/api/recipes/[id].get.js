@@ -16,6 +16,7 @@ export default defineEventHandler(async (event) => {
       preparationTime: true,
       cookingTime: true,
       category: true,
+      isPublic: true,
       tags: {
         select: {
           tag: {

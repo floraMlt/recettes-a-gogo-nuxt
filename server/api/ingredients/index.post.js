@@ -1,6 +1,6 @@
-import { Unit } from "@prisma/client"
-import prisma from "../../utils/prisma"
-import { z } from "zod"
+import { Unit } from '@prisma/client'
+import prisma from '../../utils/prisma'
+import { z } from 'zod'
 
 const createIngredientSchema = z.object({
   title: z.string().min(2),
@@ -15,7 +15,7 @@ export default defineEventHandler(async (request) => {
   if (!parsed.success) {
     throw createError({
       statusCode: 400,
-      message: parsed.error.errors.map((err) => err.message).join(", ")
+      message: parsed.error.errors.map((err) => err.message).join(', ')
     })
   }
 

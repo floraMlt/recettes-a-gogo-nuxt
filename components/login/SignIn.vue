@@ -1,6 +1,6 @@
 <template>
   <form
-    class="flex h-full w-full flex-col justify-around gap-2 py-4"
+    class="flex h-full w-full flex-col justify-around gap-2 pt-4"
     @submit.prevent="onSignIn"
   >
     <div class="my-1 flex flex-row items-center justify-center gap-1">

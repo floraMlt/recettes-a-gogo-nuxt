@@ -1,10 +1,7 @@
 <template>
-    <div>
-        <h1>Private</h1>
-    </div>
+  <div>
+    <h1>Private</h1>
+  </div>
 </template>
 
-<script setup>
-
-
-</script>
+<script setup></script>

@@ -40,7 +40,7 @@ const userId = ref(null)
 const { data: userData } = await useAuth()
 userId.value = userData.value?.user?.id
 
-const { data: user, isFetching } = await useFetch(
+const { data: user } = await useFetch(
   `/api/users/${userId.value}?userId=${userId.value}`
 )
 </script>

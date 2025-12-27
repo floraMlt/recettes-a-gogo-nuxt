@@ -37,7 +37,7 @@
               alt="Image de la recette"
               format="webp"
               sizes="(max-width: 1200px) 100vw, 1200px"
-              class="bg-secondary-light h-auto max-h-[250px] w-full rounded-lg object-cover"
+              class="bg-secondary-light pointer-events-none h-auto max-h-[250px] w-full rounded-lg object-cover"
             />
           </div>
 
@@ -139,12 +139,11 @@ const { data: recipe, isFetching } = await useFetch(
 )
 
 const updateFavorites = async () => {
-  const { data, status, error, isFetching } = useFetch(
-    `/api/recipes/${recipeId}`,
-    {
-      method: 'PATCH',
-      body: { favorites: !recipe.value.favorite, userId: userId.value }
-    }
-  )
+  await $fetch(`/api/recipes/${recipeId}`, {
+    method: 'PATCH',
+    body: { favorites: !recipe.value.favorite, userId: userId.value }
+  })
+
+  recipe.value.favorite = !recipe.value.favorite
 }
 </script>

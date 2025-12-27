@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="outline-primary-100 rounded-3xl border p-7">
     <Tabs default-value="login" class="w-[450px]">
       <TabsList class="grid w-full grid-cols-2">
         <TabsTrigger value="login" class="hover:cursor-pointer">

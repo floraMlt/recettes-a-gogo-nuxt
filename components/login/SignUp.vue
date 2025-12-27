@@ -1,5 +1,5 @@
 <template>
-  <form class="flex h-full w-full flex-col gap-2 py-4" @submit="onSignUp">
+  <form class="flex h-full w-full flex-col gap-2 pt-4" @submit="onSignUp">
     <div class="my-1 flex flex-row items-center justify-center gap-3">
       <User class="size-5" />
 
