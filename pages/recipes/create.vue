@@ -1,120 +1,141 @@
 <template>
   <div
-    class="direction-column flex h-full flex-col items-center justify-center pb-8"
+    class="direction-column relative flex h-full min-h-screen flex-col items-center justify-center pb-8"
   >
-    <h1 class="mt-2 mb-7 text-center text-2xl">Nouvelle recette</h1>
+    <div class="mt-[10vh] max-w-[80vw] rounded-xl bg-white p-8">
+      <h1 class="mb-7 text-center text-2xl">Nouvelle recette</h1>
 
-    <form
-      class="grid w-fit max-w-[80vw] min-w-[70%] grid-cols-1 gap-x-8 gap-y-4 rounded-xl bg-white p-8 text-sm md:grid-cols-2"
-      @submit.prevent="createRecipe"
-    >
-      <CustomInput
-        name="title"
-        label="Titre"
-        placeholder="Titre de la recette"
-      />
-      <CustomInput
-        name="description"
-        label="Description"
-        placeholder="Description de la recette"
-      />
-      <CustomInput
-        name="preparationTime"
-        label="Temps de préparation (en minutes)"
-      />
-      <CustomInput name="cookingTime" label="Temps de cuisson (en minutes)" />
+      <form
+        class="grid w-fit min-w-[70vw] grid-cols-1 gap-x-8 gap-y-4 text-sm md:grid-cols-2"
+        @submit.prevent="createRecipe"
+      >
+        <CustomInput
+          name="title"
+          label="Titre"
+          placeholder="Titre de la recette"
+        />
+        <CustomInput
+          name="description"
+          label="Description"
+          placeholder="Description de la recette"
+        />
+        <CustomInput
+          name="preparationTime"
+          label="Temps de préparation (en minutes)"
+        />
+        <CustomInput name="cookingTime" label="Temps de cuisson (en minutes)" />
 
-      <CustomSelect
-        name="category"
-        label="Catégorie"
-        placeholder="Sélectionner une catégorie"
-        input-class="w-full"
-        :options="categoriesList"
-        @change="(e) => setFieldValue('category', e.target.value)"
-      />
+        <CustomSelect
+          name="category"
+          label="Catégorie"
+          placeholder="Sélectionner une catégorie"
+          input-class="w-full"
+          :options="categoriesList"
+          @change="(e) => setFieldValue('category', e.target.value)"
+        />
 
-      <CustomTagsInput name="tags" label="Tags" placeholder="Tags" />
+        <CustomTagsInput name="tags" label="Tags" placeholder="Tags" />
 
-      <div>
-        <p class="mb-1.5 font-medium">Ingrédients</p>
-        <Loader v-if="isFetching" />
-        <div v-else>
-          <CustomMultiSelect
-            name="ingredients"
-            placeholder="Sélectionner des ingrédients"
-            :options="fetchedIngredients"
-            @change="
-              (value) => {
-                ingredients = value
-                setFieldValue('ingredients', value)
-              }
-            "
-          />
+        <div>
+          <p class="mb-1.5 font-medium">Ingrédients</p>
+          <Loader v-if="isFetching" />
+          <div v-else>
+            <CustomMultiSelect
+              name="ingredients"
+              placeholder="Sélectionner des ingrédients"
+              :options="fetchedIngredients"
+              @change="
+                (value) => {
+                  ingredients = value
+                  setFieldValue('ingredients', value)
+                }
+              "
+            />
+
+            <div
+              v-for="ingredient in ingredients"
+              v-if="ingredients.length"
+              :key="`ingredient-${ingredient}`"
+              class="mt-2 ml-5 flex items-center gap-2"
+            >
+              <div class="m-w-fit w-25">
+                <CustomNumber
+                  :name="`quantity-${ingredient}`"
+                  label="Quantité"
+                />
+              </div>
+
+              <p v-if="getIngredientData(ingredient)" class="mt-5">
+                {{
+                  `${getIngredientData(ingredient).title} (${units[getIngredientData(ingredient).unit]})`
+                }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p class="mb-1.5 font-medium">Instructions</p>
 
           <div
-            v-for="ingredient in ingredients"
-            v-if="ingredients.length"
-            :key="`ingredient-${ingredient}`"
-            class="mt-2 ml-5 flex items-center gap-2"
+            v-for="(instruction, index) in instructions"
+            :key="`instruction-${index}`"
+            class="mb-4"
           >
-            <div class="m-w-fit w-25">
-              <CustomNumber :name="`quantity-${ingredient}`" label="Quantité" />
+            <div class="flex items-center gap-1">
+              <CustomTextarea
+                v-model="instructions[index]"
+                :name="`instruction-${index}`"
+                :label="`Étape ${index + 1}`"
+                input-class="w-full"
+                placeholder="Décrivez cette étape..."
+              />
+
+              <Trash2
+                v-if="instructions.length > 1 && index > 0"
+                class="mt-3 size-4.5 text-red-600 hover:cursor-pointer hover:opacity-80"
+                @click="removeInstruction(index)"
+              />
             </div>
-
-            <p v-if="getIngredientData(ingredient)" class="mt-5">
-              {{
-                `${getIngredientData(ingredient).title} (${units[getIngredientData(ingredient).unit]})`
-              }}
-            </p>
           </div>
-        </div>
-      </div>
 
-      <div>
-        <p class="mb-1.5 font-medium">Instructions</p>
-
-        <div
-          v-for="(instruction, index) in instructions"
-          :key="`instruction-${index}`"
-          class="mb-4"
-        >
-          <div class="flex items-center gap-1">
-            <CustomTextarea
-              v-model="instructions[index]"
-              :name="`instruction-${index}`"
-              :label="`Étape ${index + 1}`"
-              input-class="w-full"
-              placeholder="Décrivez cette étape..."
-            />
-
-            <Trash2
-              v-if="instructions.length > 1 && index > 0"
-              class="mt-3 size-4.5 text-red-600 hover:cursor-pointer hover:opacity-80"
-              @click="removeInstruction(index)"
-            />
-          </div>
+          <Button
+            type="button"
+            class="mt-4 hover:cursor-pointer"
+            @click="addInstruction"
+          >
+            + Ajouter une instruction
+          </Button>
         </div>
 
-        <Button
-          type="button"
-          class="mt-4 hover:cursor-pointer"
-          @click="addInstruction"
-        >
-          + Ajouter une instruction
-        </Button>
-      </div>
+        <div>
+          <CustomCheckbox name="isPublic" label="Recette publique" />
 
-      <div>
-        <CustomCheckbox name="isPublic" label="Recette publique" />
+          <Button
+            class="mt-5 ml-auto w-[100px] hover:cursor-pointer"
+            type="submit"
+          >
+            Créer
+          </Button>
+        </div>
+      </form>
+    </div>
 
-        <Button
-          class="mt-5 ml-auto w-[100px] hover:cursor-pointer"
-          type="submit"
-        >
-          Créer
-        </Button>
-      </div>
-    </form>
+    <NuxtImg
+      src="/img/list3.png"
+      alt="Image d'illustration"
+      format="webp"
+      sizes="(max-width: 500px) 60px, (max-width: 1000px) 12vw, 120px"
+      class="absolute right-[8%] bottom-0 w-[12%] max-w-[120px] min-w-[60px]"
+    />
+
+    <NuxtImg
+      src="/img/recipe4.png"
+      alt="Image d'illustration"
+      format="webp"
+      sizes="(max-width: 1500px) 60px, (max-width: 2500px) 6vw, 130px"
+      class="absolute top-[10%] left-[6%] w-[6%] max-w-[130px] min-w-[60px] rotate-15"
+    />
   </div>
 </template>
 

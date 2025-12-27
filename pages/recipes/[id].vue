@@ -89,7 +89,7 @@
       alt="Image d'illustration"
       format="webp"
       sizes="(max-width: 857px) 60px, (max-width: 1143px) 7vw, 80px"
-      class="absolute top-[23%] right-[25%] w-[7%] max-w-20 min-w-[60px]"
+      class="absolute top-[26%] right-[25%] w-[5%] max-w-20 min-w-[60px]"
     />
 
     <NuxtImg

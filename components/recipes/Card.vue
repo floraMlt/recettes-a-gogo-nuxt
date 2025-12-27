@@ -1,6 +1,6 @@
 <template>
   <Card
-    class="w-[250px] gap-2 pt-2 pb-4 shadow-none transition-shadow hover:cursor-pointer hover:shadow-sm"
+    class="z-10 w-[250px] gap-2 pt-2 pb-4 shadow-none transition-shadow hover:cursor-pointer hover:shadow-sm"
     @click="goToRecipeDetails"
   >
     <div

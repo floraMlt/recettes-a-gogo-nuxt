@@ -1,10 +1,12 @@
 <template>
-  <div class="flex h-screen w-full flex-col items-center justify-center">
+  <div
+    class="flex h-full min-h-screen w-full flex-col items-center justify-center"
+  >
     <h1 class="text-primary-700 mb-10 text-4xl">Recettes à Gogo</h1>
 
     <div
-      v-if="status == 'unauthenticated'"
-      class="relative flex h-[55%] w-[75%] flex-col items-center justify-center rounded-2xl bg-white"
+      v-if="status === 'unauthenticated'"
+      class="relative flex h-[55%] w-[75%] flex-col items-center justify-center rounded-2xl bg-white py-16"
     >
       <LoginForm />
 

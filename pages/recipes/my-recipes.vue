@@ -1,5 +1,5 @@
 <template>
-  <div class="relative h-full overflow-y-auto px-35">
+  <div class="relative h-full min-h-screen overflow-y-auto px-35">
     <h1 class="mb-10 pt-[100px] text-center text-2xl">Mes recettes</h1>
 
     <div class="mx-[10%] mb-15">

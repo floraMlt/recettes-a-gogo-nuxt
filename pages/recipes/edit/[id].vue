@@ -1,6 +1,6 @@
 <template>
   <div
-    class="direction-column flex h-full flex-col items-center justify-center pb-8"
+    class="direction-column flex h-full min-h-screen flex-col items-center justify-center pb-8"
   >
     <h1 class="font-playfair mt-[10vh] mb-7 text-center text-2xl sm:mt-[100px]">
       Edition de la recette
