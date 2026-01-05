@@ -31,7 +31,7 @@
         </div>
 
         <div class="flex-column my-8 flex gap-10">
-          <div class="w-[30%]">
+          <div class="r w-[30%]">
             <NuxtImg
               src="/img/home1.png"
               alt="Image de la recette"

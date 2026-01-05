@@ -33,6 +33,22 @@
         </form>
       </div>
     </div>
+
+    <NuxtImg
+      src="/img/recipe4.png"
+      alt="Image d'illustration"
+      format="webp"
+      sizes="(max-width: 1500px) 60px, (max-width: 2500px) 6vw, 130px"
+      class="absolute top-[10%] left-[6%] w-[6%] max-w-[130px] min-w-[60px] rotate-15"
+    />
+
+    <NuxtImg
+      src="/img/list3.png"
+      alt="Image d'illustration"
+      format="webp"
+      sizes="(max-width: 500px) 60px, (max-width: 1000px) 12vw, 120px"
+      class="absolute right-[8%] bottom-0 w-[12%] max-w-[120px] min-w-[60px]"
+    />
   </div>
 </template>
 

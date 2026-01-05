@@ -29,6 +29,14 @@
         </div>
       </div>
     </div>
+
+    <NuxtImg
+      src="/img/auth1.png"
+      alt="Image d'illustration"
+      format="webp"
+      sizes="(max-width: 500px) 60px, (max-width: 1000px) 12vw, 120px"
+      class="absolute right-[4%] bottom-4 w-[12%] max-w-[120px] min-w-[60px] rotate-80"
+    />
   </div>
 </template>
 

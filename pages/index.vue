@@ -3,7 +3,7 @@
     class="relative flex h-full min-h-screen flex-col items-center justify-center"
   >
     <div
-      class="bg-secondary-light mt-[10vh] flex min-h-[50%] w-[80%] flex-col items-center rounded-2xl py-12"
+      class="bg-secondary-light mt-[8vh] flex min-h-[50%] w-[80%] flex-col items-center rounded-2xl py-12"
     >
       <h1 class="text-primary-700 mb-6 text-center text-3xl font-bold">
         Bienvenue sur Recettes à gogo !
@@ -46,8 +46,8 @@
       src="/img/home2.png"
       alt="Image d'illustration"
       format="webp"
-      sizes="(max-width: 714px) 200px, (max-width: 1250px) 28vw, 310px"
-      class="absolute bottom-0 left-0 w-[28%] max-w-[310px] min-w-[200px]"
+      sizes="(max-width: 414px) 150px, (max-width: 1000px) 28vw, 290px"
+      class="absolute bottom-0 left-0 w-[24%] max-w-[290px] min-w-[150px]"
     />
 
     <NuxtImg
