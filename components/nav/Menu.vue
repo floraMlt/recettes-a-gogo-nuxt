@@ -34,6 +34,13 @@
       </NavigationMenuList>
     </NavigationMenu>
 
+    <div v-if="user.isAdmin">
+      <Settings
+        class="text-primary-600 mr-3 size-7 stroke-[1.35] hover:cursor-pointer hover:opacity-70"
+        @click="$router.push('/admin')"
+      />
+    </div>
+
     <div v-if="status === 'authenticated'" class="mr-7 flex justify-center">
       <CircleUserRound
         class="text-primary-600 mr-3 size-7 stroke-[1.35] hover:cursor-pointer hover:opacity-70"
@@ -57,7 +64,14 @@ import {
   navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu'
 
-import { CircleUserRound, LogOut } from 'lucide-vue-next'
+import { CircleUserRound, LogOut, Settings } from 'lucide-vue-next'
 
-const { signOut, status } = useAuth()
+const { signOut, status, data: userData } = useAuth()
+
+const userId = ref(null)
+userId.value = userData.value?.user?.id
+
+const { data: user } = await useFetch(
+  `/api/users/${userId.value}?userId=${userId.value}`
+)
 </script>

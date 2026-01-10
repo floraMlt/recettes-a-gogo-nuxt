@@ -13,8 +13,6 @@
 
       <SelectContent>
         <SelectGroup>
-          <SelectLabel v-if="label">{{ label }}</SelectLabel>
-
           <SelectItem
             v-for="option in options"
             :key="`select-option-${option.value}`"
