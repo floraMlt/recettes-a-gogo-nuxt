@@ -41,32 +41,51 @@
         <p class="mb-1.5 font-medium">Ingrédients</p>
         <Loader v-if="isFetching" />
         <div v-else>
-          <CustomMultiSelect
-            v-model="selectedIngredientIds"
+          <CustomAutocomplete
+            v-model:search-term="searchQuery"
             name="ingredients"
-            placeholder="Sélectionner des ingrédients"
-            :options="fetchedIngredients"
-          />
+            placeholder="Rechercher des ingrédients"
+            :options="searchResults"
+            :is-loading="isSearching"
+            @change="handleSelection"
+          >
+            <template #dialog>
+              <AddIngredientDialog
+                :ingredient-title="searchQuery"
+                @ingredientCreated="handleIngredientCreated"
+              />
+            </template>
+          </CustomAutocomplete>
 
           <div
             v-for="ingredient in ingredients"
             v-if="ingredients.length"
             :key="`ingredient-${getIngredientData(ingredient.ingredientId).title}`"
-            class="mt-2 ml-5 flex items-center gap-2"
+            class="mt-2 ml-5 flex items-center justify-between gap-2"
           >
-            <div class="m-w-fit w-25">
-              <CustomNumber
-                v-model="ingredient.quantity"
-                :name="`quantity-${getIngredientData(ingredient.ingredientId).title}`"
-                label="Quantité"
-              />
-            </div>
-
-            <p v-if="ingredient" class="mt-5">
+            <p v-if="ingredient">
               {{
                 `${getIngredientData(ingredient.ingredientId).title} (${units[getIngredientData(ingredient.ingredientId).unit]})`
               }}
             </p>
+
+            <div class="m-w-fit flex items-center">
+              <div class="w-25">
+                <CustomNumber
+                  v-model="ingredient.quantity"
+                  :name="`quantity-${getIngredientData(ingredient.ingredientId).title}`"
+                />
+              </div>
+
+              <Trash2
+                class="mt-2 ml-3 size-4.5 text-red-600 hover:cursor-pointer hover:opacity-80"
+                @click="
+                  ingredients = ingredients.filter(
+                    (i) => i.ingredientId !== ingredient.ingredientId
+                  )
+                "
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -130,12 +149,13 @@ import { toast } from 'vue-sonner'
 import { useRouter } from 'vue-router'
 
 import CustomInput from '@/components/inputs/CustomInput'
-import CustomMultiSelect from '@/components/inputs/CustomMultiSelect'
+import CustomAutocomplete from '@/components/inputs/CustomAutocomplete'
 import CustomSelect from '@/components/inputs/CustomSelect'
 import CustomTagsInput from '@/components/inputs/CustomTagsInput'
 import CustomTextarea from '@/components/inputs/CustomTextarea'
 import CustomNumber from '@/components/inputs/CustomNumber'
 import CustomCheckbox from '@/components/inputs/CustomCheckbox'
+import AddIngredientDialog from '@/components/recipes/AddIngredientDialog'
 
 import categoriesName from '@/constants/CategoriesName'
 import units from '@/constants/Units'
@@ -147,6 +167,10 @@ const selectedIngredientIds = ref([])
 const fetchedIngredients = ref([])
 const instructions = ref([''])
 const initialRecipe = ref({})
+
+const searchQuery = ref('')
+const searchResults = ref([])
+const isSearching = ref(false)
 
 const categoriesList = Object.entries(categoriesName).map(([key, value]) => ({
   title: value,
@@ -240,21 +264,29 @@ watchEffect(() => {
   formInitialized.value = true
 })
 
-watch(
-  selectedIngredientIds,
-  (newIds) => {
-    if (!Array.isArray(newIds)) {
-      newIds = newIds ? [newIds] : []
-    }
+watch(searchQuery, async (newQuery) => {
+  if (!newQuery || newQuery.trim().length < 2) {
+    searchResults.value = []
+    return
+  }
 
-    newIds.forEach((id) => {
-      if (!ingredients.value.some((it) => it.ingredientId === id)) {
-        ingredients.value.push({ ingredientId: id, quantity: null })
-      }
+  isSearching.value = true
+
+  try {
+    const { data: results } = await useFetch('/api/ingredients', {
+      query: { search: newQuery }
     })
-  },
-  { immediate: true }
-)
+
+    if (results.value) {
+      searchResults.value = results.value
+    }
+  } catch (error) {
+    console.error('Erreur lors de la recherche:', error)
+    searchResults.value = []
+  } finally {
+    isSearching.value = false
+  }
+})
 
 const diffObject = (initial, current) => {
   const result = {}
@@ -316,5 +348,29 @@ const addInstruction = () => {
 
 const removeInstruction = (index) => {
   instructions.value.splice(index, 1)
+}
+
+const handleSelection = (selectedIds) => {
+  selectedIngredientIds.value = selectedIds
+  ingredients.value.push(
+    ...selectedIds
+      .filter((id) => !ingredients.value.some((ing) => ing.ingredientId === id))
+      .map((id) => ({
+        ingredientId: id,
+        quantity: 1
+      }))
+  )
+
+  searchQuery.value = ''
+}
+
+const handleIngredientCreated = (createdIngredient) => {
+  fetchedIngredients.value.push(createdIngredient)
+  selectedIngredientIds.value.push(createdIngredient.id)
+  ingredients.value.push({
+    ingredientId: createdIngredient.id,
+    quantity: 1
+  })
+  searchQuery.value = ''
 }
 </script>

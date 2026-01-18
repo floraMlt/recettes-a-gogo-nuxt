@@ -14,19 +14,27 @@
 
 @keyframes loader {
   0% {
-    box-shadow: 20px 0 #f9bc8e, -20px 0 #f9bc8e30;
+    box-shadow:
+      20px 0 #f9bc8e,
+      -20px 0 #f9bc8e30;
     background: #f9bc8e;
   }
   33% {
-    box-shadow: 20px 0 #f9bc8e, -20px 0 #f9bc8e30;
+    box-shadow:
+      20px 0 #f9bc8e,
+      -20px 0 #f9bc8e30;
     background: #f9bc8e30;
   }
   66% {
-    box-shadow: 20px 0 #f9bc8e30, -20px 0 #f9bc8e;
+    box-shadow:
+      20px 0 #f9bc8e30,
+      -20px 0 #f9bc8e;
     background: #f9bc8e30;
   }
   100% {
-    box-shadow: 20px 0 #f9bc8e30, -20px 0 #f9bc8e;
+    box-shadow:
+      20px 0 #f9bc8e30,
+      -20px 0 #f9bc8e;
     background: #f9bc8e;
   }
 }

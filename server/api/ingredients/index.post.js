@@ -1,6 +1,7 @@
 import { Unit } from '@prisma/client'
 import prisma from '../../utils/prisma'
 import { z } from 'zod'
+import { getServerSession } from '#auth'
 
 const createIngredientSchema = z.object({
   title: z.string().min(2),
@@ -20,12 +21,17 @@ export default defineEventHandler(async (request) => {
   }
 
   const { title, unit } = parsed.data
+  const session = await getServerSession(request)
 
   const newIngredient = await prisma.ingredient.create({
     data: {
       title,
       unit,
-      createdById: 'cmd3efb4y0000j668lz6gw4bt'
+      createdBy: {
+        connect: {
+          id: session.user.id
+        }
+      }
     },
     select: {
       id: true,

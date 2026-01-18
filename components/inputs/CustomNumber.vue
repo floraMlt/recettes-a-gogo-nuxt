@@ -17,9 +17,9 @@
           :max="max"
         >
           <NumberFieldContent>
-            <NumberFieldDecrement />
+            <NumberFieldDecrement class="hover:cursor-pointer" />
             <NumberFieldInput />
-            <NumberFieldIncrement />
+            <NumberFieldIncrement class="hover:cursor-pointer" />
           </NumberFieldContent>
         </NumberField>
       </FormControl>

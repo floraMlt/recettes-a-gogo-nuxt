@@ -7,7 +7,20 @@ export default defineEventHandler(async (event) => {
   //     throw createError({ statusCode: 401, statusMessage: 'Non authentifié' })
   // }
 
+  const query = getQuery(event)
+  const searchTerm = query.search
+
+  const whereClause = searchTerm
+    ? {
+        title: {
+          contains: searchTerm,
+          mode: 'insensitive'
+        }
+      }
+    : {}
+
   const ingredients = await prisma.ingredient.findMany({
+    where: whereClause,
     select: {
       id: true,
       title: true,
