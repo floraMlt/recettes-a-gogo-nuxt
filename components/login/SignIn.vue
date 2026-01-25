@@ -4,7 +4,7 @@
     @submit.prevent="onSignIn"
   >
     <div class="my-1 flex flex-row items-center justify-center gap-1">
-      <User class="text-primary-700 size-5" />
+      <UserIcon class="text-primary-700 size-5" />
       <h1 class="text-primary-700 text-center text-lg">Connexion</h1>
     </div>
 
@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { User } from 'lucide-vue-next'
+import { UserIcon } from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'

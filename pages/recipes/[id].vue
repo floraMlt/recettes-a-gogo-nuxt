@@ -1,7 +1,9 @@
 <template>
-  <div class="relative h-full min-h-screen overflow-y-auto px-[20vw] pb-20">
+  <div
+    class="relative h-full min-h-screen w-screen overflow-y-auto px-4 pb-20 md:px-[20vw]"
+  >
     <div
-      class="mt-[10vh] min-w-[60vw] rounded-lg bg-white px-[8%] py-[50px] sm:mt-[100px]"
+      class="mt-[8vh] min-w-[60vw] rounded-lg bg-white px-3 py-5 sm:mt-[100px] md:mt-[10vh] md:px-[8%] md:py-[50px]"
     >
       <Loader v-if="isFetching" />
 
@@ -19,18 +21,21 @@
 
           <div class="flex">
             <RouterLink :to="`/recipes/edit/${recipe.id}`">
-              <Pen class="mr-2 hover:cursor-pointer" />
+              <PenIcon
+                class="mr-2 transition-transform duration-320 hover:scale-110 hover:rotate-3 hover:cursor-pointer"
+              />
             </RouterLink>
-            <Star
+
+            <StarIcon
               :fill="recipe.favorite ? '#fbad71' : 'none'"
               color="#fbad71"
-              class="hover:cursor-pointer"
+              class="transition-transform duration-320 hover:scale-110 hover:rotate-3 hover:cursor-pointer"
               @click="updateFavorites"
             />
           </div>
         </div>
 
-        <div class="flex-column my-8 flex gap-10">
+        <div class="flex-column my-8 flex gap-4 md:gap-10">
           <div class="r w-[30%]">
             <NuxtImg
               src="/img/home1.png"
@@ -42,15 +47,17 @@
           </div>
 
           <div class="w-[60%]">
-            <h2 class="mt-4 mb-2 text-center text-xl">Ingrédients :</h2>
+            <h2 class="mb-2 text-left text-xl md:mt-4 md:text-center">
+              Ingrédients :
+            </h2>
 
-            <div class="grid grid-cols-2 gap-2 md:grid">
+            <div class="grid grid-cols-1 gap-2 md:grid md:grid-cols-2">
               <p
                 v-for="(ingredient, index) in recipe.ingredients"
                 :key="index"
                 class="flex items-center gap-1.5"
               >
-                <CircleSmall size="12px" fill="#795f6b" />
+                <CircleSmallIcon size="12px" fill="#795f6b" />
                 {{
                   `${ingredient.ingredient.title} (${ingredient.quantity} ${units[ingredient.ingredient.unit]})`
                 }}
@@ -59,12 +66,12 @@
 
             <div class="justify-self-right mt-8 flex">
               <div v-if="recipe.preparationTime" class="mr-4 flex">
-                <AlarmClock class="mr-1.5 size-5" />
+                <AlarmClockIcon class="mr-1.5 size-5" />
                 {{ convertMinToHours(recipe.preparationTime) }}
               </div>
 
               <div v-if="recipe.cookingTime" class="flex">
-                <CookingPot class="mr-1.5 size-5" />
+                <CookingPotIcon class="mr-1.5 size-5" />
                 {{ convertMinToHours(recipe.cookingTime) }}
               </div>
             </div>
@@ -77,8 +84,10 @@
             :key="index"
             class="flex items-center gap-1.5"
           >
-            <CircleSmall size="16px" />
-            {{ instruction }}
+            <CircleSmallIcon size="16px" />
+            <p>
+              {{ instruction }}
+            </p>
           </div>
         </div>
       </div>
@@ -89,14 +98,14 @@
       alt="Image d'illustration"
       format="webp"
       sizes="(max-width: 857px) 60px, (max-width: 1143px) 7vw, 80px"
-      class="absolute top-[26%] right-[25%] w-[5%] max-w-20 min-w-[60px]"
+      class="absolute top-[26%] right-[25%] hidden w-[5%] max-w-20 min-w-[60px] md:block"
     />
 
     <NuxtImg
       src="/img/recipe2.png"
       alt="Image d'illustration"
       sizes="(max-width: 1167px) 70px, (max-width: 1667px) 6vw, 100px"
-      class="absolute right-0 bottom-[10%] w-[6%] max-w-[100px] min-w-[70px]"
+      class="absolute right-0 bottom-[10%] hidden w-[6%] max-w-[100px] min-w-[70px] md:block"
     />
 
     <NuxtImg
@@ -104,7 +113,7 @@
       alt="Image d'illustration"
       format="webp"
       sizes="(max-width: 583px) 70px, (max-width: 833px) 12vw, 100px"
-      class="absolute bottom-[40%] left-0 w-[12%] max-w-[100px] min-w-[70px]"
+      class="absolute bottom-[40%] left-0 hidden w-[12%] max-w-[100px] min-w-[70px] md:block"
     />
 
     <NuxtImg
@@ -112,7 +121,7 @@
       alt="Image d'illustration"
       format="webp"
       sizes="(max-width: 1500px) 60px, (max-width: 2500px) 4vw, 100px"
-      class="absolute top-[16%] left-[30%] w-[4%] max-w-[100px] min-w-[60px]"
+      class="absolute top-[16%] left-[30%] hidden w-[4%] max-w-[100px] min-w-[60px] md:block"
     />
   </div>
 </template>
@@ -122,7 +131,13 @@ import { useRoute } from 'vue-router'
 
 import { Badge } from '@/components/ui/badge'
 
-import { AlarmClock, CookingPot, Star, CircleSmall, Pen } from 'lucide-vue-next'
+import {
+  AlarmClockIcon,
+  CookingPotIcon,
+  StarIcon,
+  CircleSmallIcon,
+  PenIcon
+} from 'lucide-vue-next'
 import { convertMinToHours } from '@/helpers/convertMinToHours'
 import categoriesName from '@/constants/CategoriesName'
 import units from '@/constants/Units'

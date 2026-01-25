@@ -1,13 +1,15 @@
 <template>
   <div
-    class="direction-column flex h-full min-h-screen flex-col items-center justify-center pb-8"
+    class="direction-column flex h-full min-h-screen w-screen flex-col items-center justify-center pb-8"
   >
-    <h1 class="font-playfair mt-[10vh] mb-7 text-center text-2xl sm:mt-[100px]">
+    <h1
+      class="font-playfair mt-[8vh] mb-7 text-center text-2xl sm:mt-[100px] md:mt-[10vh]"
+    >
       Edition de la recette
     </h1>
 
     <form
-      class="grid w-fit max-w-[80vw] min-w-[70%] grid-cols-1 gap-x-8 gap-y-4 rounded-xl bg-white p-8 text-sm md:grid-cols-2"
+      class="grid w-fit max-w-[95vw] min-w-[70%] grid-cols-1 gap-x-8 gap-y-4 rounded-xl bg-white p-6 text-sm md:max-w-[80vw] md:grid-cols-2 md:p-8"
       @submit.prevent="editRecipe"
     >
       <CustomInput
@@ -52,7 +54,7 @@
             <template #dialog>
               <AddIngredientDialog
                 :ingredient-title="searchQuery"
-                @ingredientCreated="handleIngredientCreated"
+                @ingredient-created="handleIngredientCreated"
               />
             </template>
           </CustomAutocomplete>
@@ -61,7 +63,7 @@
             v-for="ingredient in ingredients"
             v-if="ingredients.length"
             :key="`ingredient-${getIngredientData(ingredient.ingredientId).title}`"
-            class="mt-2 ml-5 flex items-center justify-between gap-2"
+            class="mt-2 ml-3 flex items-center justify-between gap-2"
           >
             <p v-if="ingredient">
               {{
@@ -77,8 +79,8 @@
                 />
               </div>
 
-              <Trash2
-                class="mt-2 ml-3 size-4.5 text-red-600 hover:cursor-pointer hover:opacity-80"
+              <XIcon
+                class="mt-2 ml-3 size-4.5 text-red-600 opacity-60 transition-all hover:cursor-pointer hover:opacity-100"
                 @click="
                   ingredients = ingredients.filter(
                     (i) => i.ingredientId !== ingredient.ingredientId
@@ -96,21 +98,24 @@
         <div
           v-for="(instruction, index) in instructions"
           :key="`instruction-${index}`"
-          class="mb-4"
+          class="mb-4 md:ml-3"
         >
-          <div class="flex items-center gap-1">
+          <div class="flex flex-col">
+            <div class="flex items-center justify-between">
+              <p>{{ `Étape ${index + 1}` }}</p>
+
+              <XIcon
+                v-if="instructions.length > 1 && index > 0"
+                class="size-4.5 text-red-600 opacity-60 transition-all hover:cursor-pointer hover:opacity-100"
+                @click="removeInstruction(index)"
+              />
+            </div>
+
             <CustomTextarea
               v-model="instructions[index]"
               :name="`instruction-${index}`"
-              :label="`Étape ${index + 1}`"
               input-class="w-full"
               placeholder="Décrivez cette étape..."
-            />
-
-            <Trash2
-              v-if="instructions.length > 1 && index > 0"
-              class="mt-3 size-4.5 text-red-600 hover:cursor-pointer hover:opacity-80"
-              @click="removeInstruction(index)"
             />
           </div>
         </div>
@@ -143,7 +148,7 @@ import { ref, watchEffect, watch } from 'vue'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
-import { Trash2 } from 'lucide-vue-next'
+import { XIcon } from 'lucide-vue-next'
 import { useAuth } from '#imports'
 import { toast } from 'vue-sonner'
 import { useRouter } from 'vue-router'

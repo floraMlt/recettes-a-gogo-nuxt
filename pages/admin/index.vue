@@ -1,5 +1,7 @@
 <template>
-  <div class="relative h-full min-h-screen px-[10vw] pt-[100px] pb-20">
+  <div
+    class="admin-page relative h-full min-h-screen px-[10vw] pt-[100px] pb-20"
+  >
     <div
       class="h-[50%] w-[80vw] flex-col items-center justify-center rounded-2xl bg-white px-15 py-10"
     >
@@ -25,7 +27,7 @@
                 <input
                   type="checkbox"
                   :checked="user.isAdmin"
-                  class="border-secondary-200 border bg-white hover:cursor-pointer"
+                  class="accent-secondary-600 text-secondary-600 h-4 w-4 rounded border-gray-300 hover:cursor-pointer"
                   @change="toggleAdmin(user, $event.target.checked)"
                 />
               </td>
@@ -58,3 +60,10 @@ const toggleAdmin = async (user, newValue) => {
   }
 }
 </script>
+
+<style scoped>
+.admin-page input[type='checkbox']:checked {
+  background-color: var(--color-secondary-600);
+  border-color: var(--color-secondary-600);
+}
+</style>

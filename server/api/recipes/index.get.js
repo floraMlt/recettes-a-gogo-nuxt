@@ -13,6 +13,9 @@ export default defineEventHandler(async (event) => {
   const publicRecipes = query.isPublic
   const limit = query.limit ? Number(query.limit) : undefined
   const sort = query.sort
+  const search = query.search
+  const favoritesOnly = query.favoritesOnly === 'true'
+  const favoriteUserId = query.favoriteUserId
 
   const isAdmin = session?.user?.isAdmin === true
   const isOwner = authorId === session?.user?.id
@@ -30,6 +33,31 @@ export default defineEventHandler(async (event) => {
 
   if (publicRecipes !== undefined) {
     whereClause.isPublic = Boolean(publicRecipes)
+  }
+
+  if (search) {
+    whereClause.OR = [
+      {
+        title: {
+          contains: search,
+          mode: 'insensitive'
+        }
+      },
+      {
+        description: {
+          contains: search,
+          mode: 'insensitive'
+        }
+      }
+    ]
+  }
+
+  if (favoritesOnly && favoriteUserId) {
+    whereClause.favorites = {
+      some: {
+        userId: favoriteUserId
+      }
+    }
   }
 
   let orderBy = undefined

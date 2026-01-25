@@ -16,12 +16,12 @@
 
     <CardContent class="flex-column flex">
       <div v-if="recipe.preparationTime" class="mr-4 flex">
-        <AlarmClock class="mr-1.5 size-5" />
+        <AlarmClockIcon class="mr-1.5 size-5" />
         {{ convertMinToHours(recipe.preparationTime) }}
       </div>
 
       <div v-if="recipe.cookingTime" class="flex">
-        <CookingPot class="mr-1.5 size-5" />
+        <CookingPotIcon class="mr-1.5 size-5" />
         {{ convertMinToHours(recipe.cookingTime) }}
       </div>
     </CardContent>
@@ -39,7 +39,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 
-import { AlarmClock, CookingPot } from 'lucide-vue-next'
+import { AlarmClockIcon, CookingPotIcon } from 'lucide-vue-next'
 import { convertMinToHours } from '@/helpers/convertMinToHours'
 
 const router = useRouter()

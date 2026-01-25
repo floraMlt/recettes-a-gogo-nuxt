@@ -51,7 +51,7 @@
               <template #dialog>
                 <AddIngredientDialog
                   :ingredient-title="searchQuery"
-                  @ingredientCreated="handleIngredientCreated"
+                  @ingredient-created="handleIngredientCreated"
                 />
               </template>
             </CustomAutocomplete>
@@ -60,7 +60,7 @@
               v-for="ingredient in ingredients"
               v-if="ingredients.length"
               :key="`ingredient-${getIngredientData(ingredient.ingredientId).title}`"
-              class="mt-2 ml-5 flex items-center justify-between gap-2"
+              class="mt-2 ml-3 flex items-center justify-between gap-2"
             >
               <p v-if="ingredient">
                 {{
@@ -76,8 +76,8 @@
                   />
                 </div>
 
-                <Trash2
-                  class="mt-2 ml-3 size-4.5 text-red-600 hover:cursor-pointer hover:opacity-80"
+                <XIcon
+                  class="mt-2 ml-3 size-4.5 text-red-600 opacity-60 transition-all hover:cursor-pointer hover:opacity-100"
                   @click="
                     ingredients = ingredients.filter(
                       (i) => i.ingredientId !== ingredient.ingredientId
@@ -95,21 +95,24 @@
           <div
             v-for="(instruction, index) in instructions"
             :key="`instruction-${index}`"
-            class="mb-4"
+            class="mb-4 ml-3"
           >
-            <div class="flex items-center gap-1">
+            <div class="flex flex-col">
+              <div class="flex items-center justify-between">
+                <p>{{ `Étape ${index + 1}` }}</p>
+
+                <XIcon
+                  v-if="instructions.length > 1 && index > 0"
+                  class="size-4.5 text-red-600 opacity-60 transition-all hover:cursor-pointer hover:opacity-100"
+                  @click="removeInstruction(index)"
+                />
+              </div>
+
               <CustomTextarea
                 v-model="instructions[index]"
                 :name="`instruction-${index}`"
-                :label="`Étape ${index + 1}`"
                 input-class="w-full"
                 placeholder="Décrivez cette étape..."
-              />
-
-              <Trash2
-                v-if="instructions.length > 1 && index > 0"
-                class="mt-3 size-4.5 text-red-600 hover:cursor-pointer hover:opacity-80"
-                @click="removeInstruction(index)"
               />
             </div>
           </div>
@@ -159,7 +162,7 @@ import { ref, watchEffect } from 'vue'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
-import { Trash2 } from 'lucide-vue-next'
+import { XIcon } from 'lucide-vue-next'
 import { useAuth } from '#imports'
 import { toast } from 'vue-sonner'
 import { useRouter } from 'vue-router'

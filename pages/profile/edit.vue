@@ -1,15 +1,17 @@
 <template>
-  <div class="relative h-full min-h-screen px-[10vw] pt-[100px] pb-20">
+  <div
+    class="relative h-full min-h-screen w-screen overflow-y-auto px-4 pt-[9vh] pb-20 md:px-[10vw] md:pt-[100px]"
+  >
     <div
-      class="h-[50%] w-[80vw] flex-col items-center justify-center rounded-2xl bg-white px-15 py-10"
+      class="h-[50%] w-[92vw] flex-col items-center justify-center rounded-2xl bg-white px-2 py-5 md:w-[80vw] md:px-15 md:py-10"
     >
       <div class="mb-6 flex items-center justify-center">
         <h1 class="text-primary-700 text-center text-2xl">Mon profil</h1>
       </div>
 
-      <div class="grid grid-cols-[1fr_2fr] gap-6">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr_2fr] md:gap-6">
         <div
-          class="bg-secondary-100 ml-4 flex h-[180px] w-[180px] flex-col items-center justify-center gap-4 rounded-[150px] p-10"
+          class="bg-secondary-100 mx-auto flex h-20 w-20 flex-col items-center justify-center gap-4 rounded-[150px] p-3 md:ml-4 md:h-[180px] md:w-[180px] md:p-10"
         >
           <NuxtImg src="/img/list2.png" format="webp" alt="User avatar" />
         </div>
@@ -39,7 +41,7 @@
       alt="Image d'illustration"
       format="webp"
       sizes="(max-width: 1500px) 60px, (max-width: 2500px) 6vw, 130px"
-      class="absolute top-[10%] left-[6%] w-[6%] max-w-[130px] min-w-[60px] rotate-15"
+      class="absolute top-[10%] left-[6%] hidden w-[6%] max-w-[130px] min-w-[60px] rotate-15 md:block"
     />
 
     <NuxtImg

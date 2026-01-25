@@ -1,18 +1,24 @@
 <template>
-  <div class="relative h-full min-h-screen px-[10vw] pt-[100px] pb-20">
+  <div
+    class="relative h-full min-h-screen w-screen px-4 pt-[10vh] pb-20 md:px-[10vw] md:pt-[100px]"
+  >
     <div
-      class="h-[50%] w-[80vw] flex-col items-center justify-center rounded-2xl bg-[url('/img/background.jpg')] bg-cover bg-center px-15 py-10"
+      class="h-[50%] w-full flex-col items-center justify-center rounded-2xl bg-[url('/img/background.jpg')] bg-cover bg-center px-1 py-4 md:w-[80vw] md:px-15 md:py-10"
     >
       <div class="mb-6 flex items-center justify-center">
         <h1 class="text-primary-700 text-center text-2xl">Mon profil</h1>
         <NuxtLink to="/profile/edit">
-          <Pen class="ml-2 size-5 hover:cursor-pointer hover:opacity-80" />
+          <PenIcon
+            class="ml-2 size-5 transition-transform duration-320 hover:scale-110 hover:rotate-3 hover:cursor-pointer"
+          />
         </NuxtLink>
       </div>
 
-      <div class="grid grid-cols-[1fr_2fr] gap-6">
+      <div
+        class="grid grid-cols-[1fr_3fr] gap-3 md:grid-cols-[1fr_2fr] md:gap-6"
+      >
         <div
-          class="bg-secondary-100 ml-4 flex h-[180px] w-[180px] flex-col items-center justify-center gap-4 rounded-[150px] p-10"
+          class="bg-secondary-100 ml-4 flex h-[50px] w-[50px] flex-col items-center justify-center gap-4 rounded-[150px] p-2 md:h-[180px] md:w-[180px] md:p-10"
         >
           <NuxtImg src="/img/list2.png" format="webp" alt="User avatar" />
         </div>
@@ -42,7 +48,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { Pen } from 'lucide-vue-next'
+import { PenIcon } from 'lucide-vue-next'
 
 const userId = ref(null)
 const { data: userData } = await useAuth()

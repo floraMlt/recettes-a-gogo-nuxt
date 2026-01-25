@@ -1,7 +1,7 @@
 <template>
   <form class="flex h-full w-full flex-col gap-2 pt-4" @submit="onSignUp">
     <div class="my-1 flex flex-row items-center justify-center gap-3">
-      <User class="size-5" />
+      <UserIcon class="size-5" />
 
       <h1 class="text-center text-lg">Inscription</h1>
     </div>
@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { User } from 'lucide-vue-next'
+import { UserIcon } from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
