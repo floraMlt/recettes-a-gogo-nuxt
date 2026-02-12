@@ -130,6 +130,14 @@
       </div>
 
       <div>
+        <CustomInputFile
+          v-model="imageUrl"
+          v-model:file-name="imageFileName"
+          :max-size="5 * 1024 * 1024"
+          label="Image de la recette"
+          class="mb-6"
+        />
+
         <CustomCheckbox name="isPublic" label="Recette publique" />
 
         <Button
@@ -160,6 +168,7 @@ import CustomTagsInput from '@/components/inputs/CustomTagsInput'
 import CustomTextarea from '@/components/inputs/CustomTextarea'
 import CustomNumber from '@/components/inputs/CustomNumber'
 import CustomCheckbox from '@/components/inputs/CustomCheckbox'
+import CustomInputFile from '@/components/inputs/CustomInputFile'
 import AddIngredientDialog from '@/components/recipes/AddIngredientDialog'
 
 import categoriesName from '@/constants/CategoriesName'
@@ -172,6 +181,9 @@ const selectedIngredientIds = ref([])
 const fetchedIngredients = ref([])
 const instructions = ref([''])
 const initialRecipe = ref({})
+const imageUrl = ref('')
+const imageFileName = ref('')
+const initialImageFileName = ref('')
 
 const searchQuery = ref('')
 const searchResults = ref([])
@@ -240,7 +252,8 @@ watchEffect(() => {
           quantity: i.quantity
         })) || [],
       instructions: recipe.instructions || [],
-      authorId: recipe.authorId
+      authorId: recipe.authorId,
+      imageFileName: recipe.imageFileName || ''
     })
   )
 
@@ -255,6 +268,10 @@ watchEffect(() => {
   instructions.value = JSON.parse(
     JSON.stringify(initialRecipe.value.instructions)
   )
+
+  imageFileName.value = recipe.imageFileName || ''
+  initialImageFileName.value = recipe.imageFileName || ''
+  imageUrl.value = recipe.imageUrl
 
   resetForm({
     values: {
@@ -324,7 +341,8 @@ const editRecipe = async () => {
         i.quantity !== '' && i.quantity != null ? Number(i.quantity) : null
     })),
     instructions: instructions.value.filter((i) => i.trim().length > 0),
-    authorId: userId
+    authorId: userId,
+    imageFileName: imageFileName.value
   }
 
   const payload = diffObject(initialRecipe.value, currentRecipe)

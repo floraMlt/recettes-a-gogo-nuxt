@@ -1,12 +1,36 @@
 import prisma from '../../utils/prisma'
+import s3Client from '../../utils/s3'
 import { getServerSession } from '#auth'
 import { getQuery } from 'h3'
+import { GetObjectCommand } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+
+async function getSignedImageUrl(fileName) {
+  if (!fileName) return null
+
+  try {
+    const command = new GetObjectCommand({
+      Bucket: process.env.S3_BUCKET_NAME,
+      Key: fileName
+    })
+
+    return await getSignedUrl(s3Client, command, {
+      expiresIn: 7 * 24 * 60 * 60
+    })
+  } catch (error) {
+    console.error('Failed to generate signed URL:', error)
+    return null
+  }
+}
 
 export default defineEventHandler(async (event) => {
   const session = await getServerSession(event)
-  // if (!session) {
-  //     throw createError({ statusCode: 401, statusMessage: 'Non authentifié' })
-  // }
+  if (!session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Utilisateur non authentifié'
+    })
+  }
 
   const query = getQuery(event)
   const authorId = query.authorId
@@ -71,5 +95,15 @@ export default defineEventHandler(async (event) => {
     ...(limit && { take: limit })
   })
 
-  return recipes
+  const recipesWithSignedUrls = await Promise.all(
+    recipes.map(async (recipe) => {
+      const imageUrl = await getSignedImageUrl(recipe.imageFileName)
+      return {
+        ...recipe,
+        imageUrl
+      }
+    })
+  )
+
+  return recipesWithSignedUrls
 })

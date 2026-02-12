@@ -50,7 +50,7 @@
               v-for="recipe in data"
               :key="recipe.id"
               :recipe="recipe"
-              class="w-[90%] md:w-auto"
+              class="w-[90%] md:w-auto md:min-w-[230px]"
             />
           </div>
         </div>
@@ -87,7 +87,7 @@ const { data: userData } = useAuth()
 userId.value = userData.value?.user?.id
 
 const queryParams = computed(() => {
-  const params = { authorId: userId.value }
+  const params = { authorId: userId.value, sort: 'recent' }
 
   if (searchQuery.value) {
     params.search = searchQuery.value

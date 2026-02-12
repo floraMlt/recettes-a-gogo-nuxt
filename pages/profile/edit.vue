@@ -10,10 +10,14 @@
       </div>
 
       <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr_2fr] md:gap-6">
-        <div
-          class="bg-secondary-100 mx-auto flex h-20 w-20 flex-col items-center justify-center gap-4 rounded-[150px] p-3 md:ml-4 md:h-[180px] md:w-[180px] md:p-10"
-        >
-          <NuxtImg src="/img/list2.png" format="webp" alt="User avatar" />
+        <div>
+          <CustomInputFile
+            v-model="imageUrl"
+            v-model:file-name="imageFileName"
+            :max-size="5 * 1024 * 1024"
+            label="Image de profil"
+            class="max-w-[85%]"
+          />
         </div>
 
         <form class="flex flex-col gap-4" @submit="editUser">
@@ -64,6 +68,7 @@ import * as z from 'zod'
 
 import CustomInput from '@/components/inputs/CustomInput'
 import CustomCheckbox from '@/components/inputs/CustomCheckbox'
+import CustomInputFile from '@/components/inputs/CustomInputFile'
 
 const router = useRouter()
 
@@ -76,6 +81,9 @@ const { data: user } = await useFetch(
 )
 
 const initialValues = ref({})
+const imageUrl = ref('')
+const imageFileName = ref('')
+const initialImageFileName = ref('')
 
 watchEffect(() => {
   if (user.value) {
@@ -83,8 +91,13 @@ watchEffect(() => {
       email: user.value.email ?? '',
       firstName: user.value.firstName ?? '',
       lastName: user.value.lastName ?? '',
-      isAdmin: Boolean(user.value.isAdmin)
+      isAdmin: Boolean(user.value.isAdmin),
+      imageFileName: user.value.imageFileName || ''
     }
+
+    imageFileName.value = user.value.imageFileName || ''
+    initialImageFileName.value = user.value.imageFileName || ''
+    imageUrl.value = user.value.imageUrl || ''
   }
 })
 
@@ -103,7 +116,8 @@ const { handleSubmit, setValues } = useForm({
     email: '',
     firstName: '',
     lastName: '',
-    isAdmin: false
+    isAdmin: false,
+    imageFileName: ''
   }
 })
 
@@ -113,7 +127,8 @@ watchEffect(() => {
       email: user.value.email ?? '',
       firstName: user.value.firstName ?? '',
       lastName: user.value.lastName ?? '',
-      isAdmin: Boolean(user.value.isAdmin)
+      isAdmin: Boolean(user.value.isAdmin),
+      imageFileName: user.value.imageFileName || ''
     })
   }
 })
@@ -126,6 +141,10 @@ const editUser = handleSubmit(async (values) => {
       if (values[key] !== initialValues.value[key]) {
         modifiedFields[key] = values[key]
       }
+    }
+
+    if (imageFileName.value !== initialImageFileName.value) {
+      modifiedFields.imageFileName = imageFileName.value
     }
 
     if (Object.keys(modifiedFields).length === 0) {

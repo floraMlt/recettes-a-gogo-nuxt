@@ -1,13 +1,21 @@
 import prisma from '../../utils/prisma'
 import { z } from 'zod'
+import { getServerSession } from '#auth'
 
 const createTagSchema = z.object({
   name: z.string().min(2).max(100)
 })
 
 export default defineEventHandler(async (request) => {
-  const body = await readBody(request)
+  const session = await getServerSession(request)
+  if (!session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Utilisateur non authentifié'
+    })
+  }
 
+  const body = await readBody(request)
   const parsed = createTagSchema.safeParse(body)
 
   if (!parsed.success) {

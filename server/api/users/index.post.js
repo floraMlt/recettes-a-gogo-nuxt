@@ -1,16 +1,26 @@
 import prisma from '../../utils/prisma'
 import bcrypt from 'bcrypt'
 import { z } from 'zod'
+import { getServerSession } from '#auth'
 
 const registerUserSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   firstName: z.string().min(2),
   lastName: z.string().min(2),
-  isAdmin: z.boolean().optional().default(false)
+  isAdmin: z.boolean().optional().default(false),
+  imageFileName: z.string().optional()
 })
 
 export default defineEventHandler(async (request) => {
+  const session = await getServerSession(request)
+  if (!session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Utilisateur non authentifié'
+    })
+  }
+
   const body = await readBody(request)
 
   const parsed = registerUserSchema.safeParse(body)
@@ -22,7 +32,7 @@ export default defineEventHandler(async (request) => {
     })
   }
 
-  const { email, firstName, lastName, isAdmin } = parsed.data
+  const { email, firstName, lastName, isAdmin, imageFileName } = parsed.data
 
   const hashedPassword = await bcrypt.hash(body.password, 12)
 
@@ -32,7 +42,8 @@ export default defineEventHandler(async (request) => {
       lastName,
       email,
       hashedPassword,
-      isAdmin
+      isAdmin,
+      imageFileName
     },
     select: {
       id: true,

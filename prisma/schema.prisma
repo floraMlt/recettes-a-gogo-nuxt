@@ -42,6 +42,7 @@ model User {
   firstName      String
   lastName       String
   hashedPassword String
+  imageFileName String?  @map("image_file_name")
   isAdmin        Boolean @default(false)
 
   recipes     Recipe[]     @relation("UserRecipes")
@@ -60,6 +61,7 @@ model Recipe {
   cookingTime     Int?
   category        Category
   isPublic        Boolean  @default(false)
+  imageFileName String?  @map("image_file_name")
 
   authorId    String
   author      User               @relation("UserRecipes", fields: [authorId], references: [id])

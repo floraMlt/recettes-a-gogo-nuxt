@@ -19,6 +19,7 @@
           label="Description"
           placeholder="Description de la recette"
         />
+
         <CustomInput
           name="preparationTime"
           label="Temps de préparation (en minutes)"
@@ -72,7 +73,7 @@
                 <div class="w-25">
                   <CustomNumber
                     v-model="ingredient.quantity"
-                    :name="`quantity-${getIngredientData(ingredient.ingredientId).title}`"
+                    :name="`quantity-${ingredient.ingredientId}`"
                   />
                 </div>
 
@@ -127,6 +128,14 @@
         </div>
 
         <div>
+          <CustomInputFile
+            v-model="imageUrl"
+            v-model:file-name="imageFileName"
+            :max-size="5 * 1024 * 1024"
+            label="Image de la recette"
+            class="mb-6"
+          />
+
           <CustomCheckbox name="isPublic" label="Recette publique" />
 
           <Button
@@ -174,6 +183,7 @@ import CustomTagsInput from '@/components/inputs/CustomTagsInput'
 import CustomTextarea from '@/components/inputs/CustomTextarea'
 import CustomNumber from '@/components/inputs/CustomNumber'
 import CustomCheckbox from '@/components/inputs/CustomCheckbox'
+import CustomInputFile from '@/components/inputs/CustomInputFile'
 import AddIngredientDialog from '@/components/recipes/AddIngredientDialog'
 
 import categoriesName from '@/constants/CategoriesName'
@@ -188,6 +198,8 @@ const instructions = ref([''])
 const searchQuery = ref('')
 const searchResults = ref([])
 const isSearching = ref(false)
+const imageUrl = ref('')
+const imageFileName = ref('')
 
 const categoriesList = Object.entries(categoriesName).map(([key, value]) => ({
   title: value,
@@ -264,12 +276,12 @@ const createRecipe = async () => {
 
   if (ingredients.value.length > 0) {
     const quantities = ingredients.value.map((ingredient) => {
-      const quantityValue = values?.[`quantity-${ingredient}`]
+      const quantityValue = values?.[`quantity-${ingredient.ingredientId}`]
       return quantityValue ? quantityValue : null
     })
 
     formattedIngredients = ingredients.value.map((ingredient, index) => ({
-      ingredientId: ingredient,
+      ingredientId: ingredient?.ingredientId,
       quantity: quantities[index]
     }))
   }
@@ -288,7 +300,9 @@ const createRecipe = async () => {
       category: values?.category || null,
       tags: values?.tags || [],
       isPublic: values?.isPublic,
-      authorId: userId
+      authorId: userId,
+      imageUrl: imageUrl.value,
+      imageFileName: imageFileName.value
     }
   })
 

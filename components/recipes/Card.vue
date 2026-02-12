@@ -3,8 +3,9 @@
     class="z-10 w-[250px] gap-2 pt-2 pb-4 shadow-none transition-shadow hover:cursor-pointer hover:shadow-sm"
     @click="goToRecipeDetails"
   >
-    <div
-      :src="recipe.image || '/img/home1.png'"
+    <SignedImage
+      :file-name="recipe.imageFileName"
+      :initial-url="recipe.imageUrl"
       alt="Image de la recette"
       class="bg-secondary-100 pointer-events-none mx-2 h-[150px] w-auto rounded-lg bg-[url('/img/home2.png')] bg-cover bg-center"
     />

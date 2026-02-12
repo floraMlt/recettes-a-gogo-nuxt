@@ -37,10 +37,10 @@
 
         <div class="flex-column my-8 flex gap-4 md:gap-10">
           <div class="r w-[30%]">
-            <NuxtImg
-              src="/img/home1.png"
+            <SignedImage
+              :file-name="recipe.imageFileName"
+              :initial-url="recipe.imageUrl"
               alt="Image de la recette"
-              format="webp"
               sizes="(max-width: 1200px) 100vw, 1200px"
               class="bg-secondary-light pointer-events-none h-auto max-h-[250px] w-full rounded-lg object-cover"
             />

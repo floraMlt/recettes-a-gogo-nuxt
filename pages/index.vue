@@ -32,7 +32,7 @@
           v-for="recipe in recipes"
           :key="`recipe-${recipe.id}`"
           :recipe="recipe"
-          class="w-[90%] md:w-auto"
+          class="w-[90%] md:w-auto md:min-w-[230px]"
         />
       </div>
     </div>

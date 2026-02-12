@@ -1,6 +1,7 @@
 import { Category } from '@prisma/client'
 import prisma from '../../utils/prisma'
 import { z } from 'zod'
+import { getServerSession } from '#auth'
 
 const registerRecipesSchema = z.object({
   title: z.string().min(2),
@@ -20,12 +21,20 @@ const registerRecipesSchema = z.object({
   isPublic: z.boolean().default(false),
   favorites: z.array(z.string()).optional(),
   tags: z.array(z.string()).optional(),
-  authorId: z.string()
+  authorId: z.string(),
+  imageFileName: z.string().optional()
 })
 
 export default defineEventHandler(async (request) => {
-  const body = await readBody(request)
+  const session = await getServerSession(request)
+  if (!session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Utilisateur non authentifié'
+    })
+  }
 
+  const body = await readBody(request)
   const parsed = registerRecipesSchema.safeParse(body)
 
   if (!parsed.success) {
@@ -46,7 +55,8 @@ export default defineEventHandler(async (request) => {
     cookingTime,
     isPublic,
     tags,
-    authorId
+    authorId,
+    imageFileName
   } = parsed.data
 
   const newRecipe = await prisma.$transaction(async (tx) => {
@@ -61,6 +71,7 @@ export default defineEventHandler(async (request) => {
         preparationTime,
         cookingTime,
         isPublic,
+        imageFileName,
         tags:
           tags && tags.length > 0
             ? {

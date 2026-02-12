@@ -1,6 +1,7 @@
 import { Unit } from '@prisma/client'
 import prisma from '../../utils/prisma'
 import { z } from 'zod'
+import { getServerSession } from '#auth'
 
 const updateIngredientSchema = z.object({
   title: z.string().min(2),
@@ -8,9 +9,16 @@ const updateIngredientSchema = z.object({
 })
 
 export default defineEventHandler(async (request) => {
+  const session = await getServerSession(request)
+  if (!session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Utilisateur non authentifié'
+    })
+  }
+
   const id = getRouterParam(request, 'id')
   const body = await readBody(request)
-
   const parsed = updateIngredientSchema.safeParse(body)
 
   if (!parsed.success) {

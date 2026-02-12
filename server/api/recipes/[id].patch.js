@@ -1,6 +1,28 @@
 import { Category } from '@prisma/client'
-import prisma from '../../utils/prisma'
+import { GetObjectCommand } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { z } from 'zod'
+import { getServerSession } from '#auth'
+import prisma from '../../utils/prisma'
+import s3Client from '../../utils/s3'
+
+async function getSignedImageUrl(fileName) {
+  if (!fileName) return null
+
+  try {
+    const command = new GetObjectCommand({
+      Bucket: process.env.S3_BUCKET_NAME,
+      Key: fileName
+    })
+
+    return await getSignedUrl(s3Client, command, {
+      expiresIn: 7 * 24 * 60 * 60
+    })
+  } catch (error) {
+    console.error('Failed to generate signed URL:', error)
+    return null
+  }
+}
 
 const registerRecipesSchema = z.object({
   title: z.string().min(2).optional(),
@@ -20,10 +42,19 @@ const registerRecipesSchema = z.object({
   isPublic: z.boolean().optional(),
   favorites: z.boolean().optional(),
   userId: z.string().optional(),
-  authorId: z.string().optional()
+  authorId: z.string().optional(),
+  imageFileName: z.string().optional()
 })
 
 export default defineEventHandler(async (request) => {
+  const session = await getServerSession(request)
+  if (!session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Utilisateur non authentifié'
+    })
+  }
+
   const id = getRouterParam(request, 'id')
   const body = await readBody(request)
   const parsed = registerRecipesSchema.safeParse(body)
@@ -37,6 +68,27 @@ export default defineEventHandler(async (request) => {
 
   const data = parsed.data
 
+  const existingRecipe = await prisma.recipe.findUnique({
+    where: { id }
+  })
+
+  if (!existingRecipe) {
+    throw createError({
+      statusCode: 404,
+      message: 'Recette non trouvée'
+    })
+  }
+
+  const isOwner = existingRecipe.authorId === session.user.id
+  const isAdmin = session.user?.isAdmin === true
+
+  if (!isOwner && !isAdmin) {
+    throw createError({
+      statusCode: 403,
+      message: 'Non autorisé à modifier cette recette'
+    })
+  }
+
   const dataToUpdate = {}
   const updatableFields = [
     'title',
@@ -46,7 +98,8 @@ export default defineEventHandler(async (request) => {
     'preparationTime',
     'cookingTime',
     'isPublic',
-    'authorId'
+    'authorId',
+    'imageFileName'
   ]
 
   for (const field of updatableFields) {
@@ -162,5 +215,7 @@ export default defineEventHandler(async (request) => {
     }
   })
 
-  return updatedRecipe
+  const imageUrl = await getSignedImageUrl(updatedRecipe.imageFileName)
+
+  return { ...updatedRecipe, imageUrl }
 })

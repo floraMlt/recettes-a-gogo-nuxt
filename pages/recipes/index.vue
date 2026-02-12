@@ -50,7 +50,7 @@
               v-for="recipe in data"
               :key="recipe.id"
               :recipe="recipe"
-              class="w-[90%] md:w-auto"
+              class="w-[90%] md:w-auto md:min-w-[230px]"
             />
           </ul>
         </div>

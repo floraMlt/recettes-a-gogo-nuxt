@@ -9,6 +9,14 @@ const createIngredientSchema = z.object({
 })
 
 export default defineEventHandler(async (request) => {
+  const session = await getServerSession(request)
+  if (!session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Utilisateur non authentifié'
+    })
+  }
+
   const body = await readBody(request)
 
   const parsed = createIngredientSchema.safeParse(body)
@@ -21,7 +29,6 @@ export default defineEventHandler(async (request) => {
   }
 
   const { title, unit } = parsed.data
-  const session = await getServerSession(request)
 
   const newIngredient = await prisma.ingredient.create({
     data: {

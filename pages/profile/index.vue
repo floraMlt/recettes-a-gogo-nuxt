@@ -17,11 +17,12 @@
       <div
         class="grid grid-cols-[1fr_3fr] gap-3 md:grid-cols-[1fr_2fr] md:gap-6"
       >
-        <div
-          class="bg-secondary-100 ml-4 flex h-[50px] w-[50px] flex-col items-center justify-center gap-4 rounded-[150px] p-2 md:h-[180px] md:w-[180px] md:p-10"
-        >
-          <NuxtImg src="/img/list2.png" format="webp" alt="User avatar" />
-        </div>
+        <SignedImage
+          :file-name="user.imageFileName || '/img/list2.png'"
+          :initial-url="user.imageUrl || '/img/list2.png'"
+          alt="Image de profil"
+          class="bg-secondary-100 pointer-events-none aspect-square h-auto max-h-[250px] w-full rounded-full object-cover md:mx-auto md:h-[180px] md:w-[180px]"
+        />
 
         <div>
           <h5 class="text-primary-700 font-bold">Nom</h5>

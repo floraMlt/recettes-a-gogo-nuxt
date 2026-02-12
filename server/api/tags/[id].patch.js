@@ -1,11 +1,20 @@
 import prisma from '../../utils/prisma'
 import { z } from 'zod'
+import { getServerSession } from '#auth'
 
 const updateTagSchema = z.object({
   name: z.string().min(2)
 })
 
 export default defineEventHandler(async (request) => {
+  const session = await getServerSession(request)
+  if (!session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Utilisateur non authentifié'
+    })
+  }
+
   const id = getRouterParam(request, 'id')
   const body = await readBody(request)
 
