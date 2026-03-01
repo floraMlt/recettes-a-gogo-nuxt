@@ -1,28 +1,8 @@
 import { Category } from '@prisma/client'
-import { GetObjectCommand } from '@aws-sdk/client-s3'
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { z } from 'zod'
 import { getServerSession } from '#auth'
 import prisma from '../../utils/prisma'
-import s3Client from '../../utils/s3'
-
-async function getSignedImageUrl(fileName) {
-  if (!fileName) return null
-
-  try {
-    const command = new GetObjectCommand({
-      Bucket: process.env.S3_BUCKET_NAME,
-      Key: fileName
-    })
-
-    return await getSignedUrl(s3Client, command, {
-      expiresIn: 7 * 24 * 60 * 60
-    })
-  } catch (error) {
-    console.error('Failed to generate signed URL:', error)
-    return null
-  }
-}
+import { getSignedImageUrl } from '../../utils/getSignedImageUrl'
 
 const registerRecipesSchema = z.object({
   title: z.string().min(2).optional(),
@@ -51,7 +31,7 @@ export default defineEventHandler(async (request) => {
   if (!session) {
     throw createError({
       statusCode: 401,
-      statusMessage: 'Utilisateur non authentifié'
+      statusMessage: 'User not authenticated'
     })
   }
 
@@ -75,7 +55,7 @@ export default defineEventHandler(async (request) => {
   if (!existingRecipe) {
     throw createError({
       statusCode: 404,
-      message: 'Recette non trouvée'
+      message: 'Recipe not found'
     })
   }
 
@@ -85,7 +65,7 @@ export default defineEventHandler(async (request) => {
   if (!isOwner && !isAdmin) {
     throw createError({
       statusCode: 403,
-      message: 'Non autorisé à modifier cette recette'
+      message: 'Not authorized to update this recipe'
     })
   }
 

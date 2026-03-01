@@ -27,7 +27,16 @@
 
           <CustomInput name="email" label="Email" placeholder="Email" />
 
-          <CustomCheckbox name="isAdmin" label="Administrateur" />
+          <div class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              :checked="user.isAdmin"
+              class="accent-secondary-600 text-secondary-600 h-4 w-4 rounded border-gray-300 hover:cursor-pointer"
+              @change="isAdmin = $event.target.checked"
+            />
+
+            <p class="text-sm">Administrateur</p>
+          </div>
 
           <Button
             size="lg"
@@ -59,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
 import { useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
@@ -67,7 +76,6 @@ import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 
 import CustomInput from '@/components/inputs/CustomInput'
-import CustomCheckbox from '@/components/inputs/CustomCheckbox'
 import CustomInputFile from '@/components/inputs/CustomInputFile'
 
 const router = useRouter()
@@ -84,22 +92,7 @@ const initialValues = ref({})
 const imageUrl = ref('')
 const imageFileName = ref('')
 const initialImageFileName = ref('')
-
-watchEffect(() => {
-  if (user.value) {
-    initialValues.value = {
-      email: user.value.email ?? '',
-      firstName: user.value.firstName ?? '',
-      lastName: user.value.lastName ?? '',
-      isAdmin: Boolean(user.value.isAdmin),
-      imageFileName: user.value.imageFileName || ''
-    }
-
-    imageFileName.value = user.value.imageFileName || ''
-    initialImageFileName.value = user.value.imageFileName || ''
-    imageUrl.value = user.value.imageUrl || ''
-  }
-})
+const isAdmin = ref(user.value?.isAdmin || false)
 
 const validationSchema = toTypedSchema(
   z.object({
@@ -116,20 +109,31 @@ const { handleSubmit, setValues } = useForm({
     email: '',
     firstName: '',
     lastName: '',
-    isAdmin: false,
     imageFileName: ''
   }
 })
 
 watchEffect(() => {
   if (user.value) {
-    setValues({
+    const values = {
       email: user.value.email ?? '',
       firstName: user.value.firstName ?? '',
       lastName: user.value.lastName ?? '',
-      isAdmin: Boolean(user.value.isAdmin),
       imageFileName: user.value.imageFileName || ''
-    })
+    }
+
+    initialValues.value = values
+    imageFileName.value = user.value.imageFileName || ''
+    initialImageFileName.value = user.value.imageFileName || ''
+    imageUrl.value = user.value.imageUrl || ''
+
+    setValues(values)
+  }
+})
+
+watch(imageFileName, (newValue) => {
+  if (!newValue) {
+    imageUrl.value = ''
   }
 })
 
@@ -143,8 +147,10 @@ const editUser = handleSubmit(async (values) => {
       }
     }
 
+    modifiedFields.isAdmin = isAdmin.value
+
     if (imageFileName.value !== initialImageFileName.value) {
-      modifiedFields.imageFileName = imageFileName.value
+      modifiedFields.imageFileName = imageFileName.value || ''
     }
 
     if (Object.keys(modifiedFields).length === 0) {

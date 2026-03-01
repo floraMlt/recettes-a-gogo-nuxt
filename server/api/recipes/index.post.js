@@ -30,7 +30,7 @@ export default defineEventHandler(async (request) => {
   if (!session) {
     throw createError({
       statusCode: 401,
-      statusMessage: 'Utilisateur non authentifié'
+      statusMessage: 'User not authenticated'
     })
   }
 
@@ -55,7 +55,6 @@ export default defineEventHandler(async (request) => {
     cookingTime,
     isPublic,
     tags,
-    authorId,
     imageFileName
   } = parsed.data
 
@@ -65,7 +64,7 @@ export default defineEventHandler(async (request) => {
         title,
         description,
         instructions,
-        authorId,
+        authorId: session.user.id,
         category,
         favorites,
         preparationTime,

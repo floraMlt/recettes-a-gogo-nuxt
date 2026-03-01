@@ -154,5 +154,6 @@ const handleFileChange = async (event) => {
 const removeImage = () => {
   modelValue.value = ''
   errorMessage.value = ''
+  fileName.value = ''
 }
 </script>

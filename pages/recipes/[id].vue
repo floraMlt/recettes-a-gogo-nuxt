@@ -7,7 +7,7 @@
     >
       <Loader v-if="isFetching" />
 
-      <div v-if="!isFetching && recipe" class="mb-5">
+      <div v-if="!isFetching && recipe">
         <div class="flex justify-between text-center">
           <div class="mx-auto w-[80%] pl-[55px]">
             <Badge class="mb-2">{{ categoriesName[recipe.category] }}</Badge>
@@ -42,7 +42,7 @@
               :initial-url="recipe.imageUrl"
               alt="Image de la recette"
               sizes="(max-width: 1200px) 100vw, 1200px"
-              class="bg-secondary-light pointer-events-none h-auto max-h-[250px] w-full rounded-lg object-cover"
+              class="bg-secondary pointer-events-none h-auto max-h-[250px] w-full rounded-lg object-cover"
             />
           </div>
 
@@ -78,7 +78,7 @@
           </div>
         </div>
 
-        <div class="border-primary-200 rounded-lg border p-2">
+        <div class="border-primary-200 mb-5 rounded-lg border p-2">
           <div
             v-for="(instruction, index) in recipe.instructions"
             :key="index"
@@ -89,6 +89,28 @@
               {{ instruction }}
             </p>
           </div>
+        </div>
+
+        <div class="mt-6 flex items-center gap-2">
+          <SignedImage
+            v-if="recipe.author.imageFileName && recipe.author.imageUrl"
+            :file-name="recipe.author.imageFileName"
+            :initial-url="recipe.author.imageUrl"
+            alt="Image de profil"
+            class="pointer-events-none aspect-square h-6 w-6 rounded-full object-cover"
+          />
+
+          <UserIcon
+            v-else
+            color="#796f6b"
+            class="bg-secondary rounded-lg p-0.5"
+          />
+
+          <p class="text-primary-600 text-sm italic">
+            {{
+              `Écrit par ${recipe.author.firstName} ${recipe.author.lastName}`
+            }}
+          </p>
         </div>
       </div>
     </div>
@@ -136,7 +158,8 @@ import {
   CookingPotIcon,
   StarIcon,
   CircleSmallIcon,
-  PenIcon
+  PenIcon,
+  UserIcon
 } from 'lucide-vue-next'
 import { convertMinToHours } from '@/helpers/convertMinToHours'
 import categoriesName from '@/constants/CategoriesName'

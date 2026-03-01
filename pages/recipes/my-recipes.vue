@@ -1,9 +1,9 @@
 <template>
   <div
-    class="my-recipes-page relative flex h-full min-h-screen w-screen justify-center overflow-y-auto px-1 pb-20 md:px-35"
+    class="my-recipes-page relative flex h-full min-h-screen w-full justify-center overflow-y-auto px-1 pb-20 md:px-35"
   >
     <div
-      class="bg-secondary-light mt-[9vh] h-fit min-h-[50%] w-[90%] rounded-xl p-1 pb-10 md:w-[80%] md:p-10"
+      class="bg-secondary-light mt-[9vh] h-fit min-h-[50%] min-w-[95%] rounded-xl p-1 pb-10 md:w-[80%] md:p-10"
     >
       <h1 class="mt-5 mb-4 text-center text-2xl md:mt-0 md:mb-10">
         Mes recettes

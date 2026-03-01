@@ -1,10 +1,10 @@
 <template>
   <div
-    class="bg-secondary fixed z-20 mb-6 flex w-full items-center py-1 shadow-sm md:shadow-none"
+    class="bg-secondary fixed z-20 mb-6 flex w-full items-center py-2 shadow-sm md:shadow-none"
   >
     <div class="hidden md:block md:w-20" />
 
-    <NavigationMenu class="mr-1 ml-auto flex md:mx-auto">
+    <NavigationMenu class="mx-auto flex">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuLink href="/" :class="navigationMenuTriggerStyle()">
@@ -64,7 +64,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {
   NavigationMenu,
   NavigationMenuItem,

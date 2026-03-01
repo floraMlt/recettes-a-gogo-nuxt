@@ -1,33 +1,13 @@
 import prisma from '../../utils/prisma'
-import s3Client from '../../utils/s3'
-import { GetObjectCommand } from '@aws-sdk/client-s3'
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { getSignedImageUrl } from '../../utils/getSignedImageUrl'
 import { getServerSession } from '#auth'
-
-async function getSignedImageUrl(fileName) {
-  if (!fileName) return null
-
-  try {
-    const command = new GetObjectCommand({
-      Bucket: process.env.S3_BUCKET_NAME,
-      Key: fileName
-    })
-
-    return await getSignedUrl(s3Client, command, {
-      expiresIn: 7 * 24 * 60 * 60
-    })
-  } catch (error) {
-    console.error('Failed to generate signed URL:', error)
-    return null
-  }
-}
 
 export default defineEventHandler(async (event) => {
   const session = await getServerSession(event)
   if (!session) {
     throw createError({
       statusCode: 401,
-      statusMessage: 'Utilisateur non authentifié'
+      statusMessage: 'User not authenticated'
     })
   }
 
@@ -48,6 +28,13 @@ export default defineEventHandler(async (event) => {
       category: true,
       isPublic: true,
       imageFileName: true,
+      author: {
+        select: {
+          firstName: true,
+          lastName: true,
+          imageFileName: true
+        }
+      },
       tags: {
         select: {
           tag: {
@@ -82,6 +69,10 @@ export default defineEventHandler(async (event) => {
   return {
     ...recipeItem,
     favorite: recipeItem.favorites.length > 0,
-    imageUrl: await getSignedImageUrl(recipeItem.imageFileName)
+    imageUrl: await getSignedImageUrl(recipeItem.imageFileName),
+    author: {
+      ...recipeItem.author,
+      imageUrl: await getSignedImageUrl(recipeItem.author.imageFileName)
+    }
   }
 })

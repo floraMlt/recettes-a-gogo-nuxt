@@ -14,17 +14,15 @@
         </NuxtLink>
       </div>
 
-      <div
-        class="grid grid-cols-[1fr_3fr] gap-3 md:grid-cols-[1fr_2fr] md:gap-6"
-      >
+      <div class="grid grid-cols-1 gap-3 md:grid-cols-[1fr_2fr] md:gap-6">
         <SignedImage
           :file-name="user.imageFileName || '/img/list2.png'"
           :initial-url="user.imageUrl || '/img/list2.png'"
           alt="Image de profil"
-          class="bg-secondary-100 pointer-events-none aspect-square h-auto max-h-[250px] w-full rounded-full object-cover md:mx-auto md:h-[180px] md:w-[180px]"
+          class="bg-secondary-100 pointer-events-none mx-auto aspect-square h-[180px] max-h-[250px] w-[180px] rounded-full object-cover"
         />
 
-        <div>
+        <div class="ml-6 md:ml-0">
           <h5 class="text-primary-700 font-bold">Nom</h5>
           <p class="text-primary-600">{{ user.lastName }}</p>
 

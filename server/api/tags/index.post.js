@@ -11,7 +11,7 @@ export default defineEventHandler(async (request) => {
   if (!session) {
     throw createError({
       statusCode: 401,
-      statusMessage: 'Utilisateur non authentifié'
+      statusMessage: 'User not authenticated'
     })
   }
 

@@ -9,7 +9,7 @@
     @error="handleError"
   />
 
-  <div v-else class="animate-pulse bg-gray-200" :class="className" />
+  <div v-else class="min-h-full" :class="className" />
 </template>
 
 <script setup>
