@@ -9,21 +9,20 @@ export default defineNuxtConfig({
     '@sidebase/nuxt-auth',
     'shadcn-nuxt',
     '@nuxt/image',
-    '@nuxtjs/google-fonts'
+    '@nuxtjs/google-fonts',
+    '@vite-pwa/nuxt'
   ],
   runtimeConfig: {
     baseURL: '/api/auth'
   },
   css: ['~/assets/main.css'],
   vite: {
-    plugins: [
-      tailwindcss(),
-    ],
+    plugins: [tailwindcss()]
   },
   auth: {
     isEnabled: true,
     globalAppMiddleware: true,
-    originEnvKey: 'AUTH_ORIGIN',
+    originEnvKey: 'AUTH_ORIGIN'
   },
   shadcn: {
     prefix: '',
@@ -35,5 +34,36 @@ export default defineNuxtConfig({
       Lato: [400, 700]
     },
     display: 'swap'
+  },
+  app: {
+    head: {
+      title: 'Recettes à gogo',
+      meta: [{ name: 'description', content: 'Mon app de recettes de cuisine' }]
+    }
+  },
+  pwa: {
+    manifest: {
+      name: 'Recettes à gogo',
+      short_name: 'RecettesAGogo',
+      description: 'Mon app de recettes de cuisine',
+      theme_color: '#f7f0ea',
+      background_color: '#ff7f0ea',
+      display: 'standalone',
+      icons: [
+        {
+          src: '/icon-192.png',
+          sizes: '192x192',
+          type: 'image/png'
+        },
+        {
+          src: '/icon-512.png',
+          sizes: '512x512',
+          type: 'image/png'
+        }
+      ]
+    },
+    workbox: {
+      navigateFallback: '/'
+    }
   }
 })
