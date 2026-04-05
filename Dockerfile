@@ -1,7 +1,5 @@
-FROM node:22-alpine AS base
+FROM node:22-alpine
 
-# ─── Build stage ─────────────────────────────────────────
-FROM base AS builder
 WORKDIR /app
 
 COPY package*.json ./
@@ -11,7 +9,7 @@ RUN npm ci --ignore-scripts
 
 COPY . .
 
-RUN npx prisma generate && npx nuxt prepare
+RUN node_modules/.bin/prisma generate && node_modules/.bin/nuxt prepare
 
 ARG VERSION
 ARG COMMIT
@@ -21,17 +19,6 @@ ENV VERSION=$VERSION \
     BUILD_DATE=$BUILD_DATE
 
 RUN npm run build
-
-# ─── Production stage ─────────────────────────────────────
-FROM base AS runner
-WORKDIR /app
-
-ENV NODE_ENV=production
-
-COPY --from=builder /app/.output ./.output
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
 
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
 RUN chmod +x docker-entrypoint.sh
