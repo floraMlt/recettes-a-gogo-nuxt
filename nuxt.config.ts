@@ -12,6 +12,9 @@ export default defineNuxtConfig({
     '@nuxtjs/google-fonts',
     '@vite-pwa/nuxt'
   ],
+  runtimeConfig: {
+    baseURL: '/api/auth'
+  },
   css: ['~/assets/main.css'],
   vite: {
     plugins: [tailwindcss()]
