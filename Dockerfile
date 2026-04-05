@@ -1,6 +1,6 @@
 FROM node:22-alpine AS base
 
-# ─── Build stage ─────────────────────────────────────────────────────────────
+# ─── Build stage ─────────────────────────────────────────
 FROM base AS builder
 WORKDIR /app
 
@@ -22,17 +22,20 @@ ENV VERSION=$VERSION \
 
 RUN npm run build
 
-# ─── Production stage ─────────────────────────────────────────────────────────
+# ─── Production stage ─────────────────────────────────────
 FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 
 COPY --from=builder /app/.output ./.output
-# Prisma uses a native query engine binary that cannot be bundled
+COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
 
+COPY docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x docker-entrypoint.sh
+
 EXPOSE 3000
 
-CMD ["node", ".output/server/index.mjs"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
