@@ -7,11 +7,11 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
-RUN npm ci
-
-RUN npx prisma generate
+RUN npm ci --ignore-scripts
 
 COPY . .
+
+RUN npx prisma generate && npx nuxt prepare
 
 ARG VERSION
 ARG COMMIT
