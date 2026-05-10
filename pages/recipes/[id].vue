@@ -3,7 +3,7 @@
     class="relative h-full min-h-screen w-screen overflow-y-auto px-4 pb-20 md:px-[20vw]"
   >
     <div
-      class="mt-[8vh] min-w-[60vw] rounded-lg bg-white px-3 py-5 sm:mt-[100px] md:mt-[10vh] md:px-[8%] md:py-[50px]"
+      class="mt-[12vh] min-w-[60vw] rounded-lg bg-white px-3 py-5 sm:mt-[100px] md:mt-[10vh] md:px-[8%] md:py-[50px]"
     >
       <Loader v-if="isFetching" />
 

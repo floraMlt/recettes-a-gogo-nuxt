@@ -3,7 +3,7 @@
     class="relative flex h-full min-h-screen w-screen flex-col items-center justify-center"
   >
     <div
-      class="bg-secondary-light mt-[9vh] mb-8 flex min-h-[50%] w-[90%] flex-col items-center rounded-2xl py-7 md:mt-[8vh] md:w-[80%] md:py-12"
+      class="bg-secondary-light mt-[12vh] mb-8 flex min-h-[50%] w-[90%] flex-col items-center rounded-2xl py-7 md:mt-[8vh] md:w-[80%] md:py-12"
     >
       <h1
         class="text-primary-700 mb-6 max-w-[90%] text-center text-3xl font-bold md:max-w-[80%]"
@@ -24,9 +24,11 @@
       <h5 class="mb-3 text-center text-xl">Vos dernières recettes</h5>
 
       <div v-if="fetchingRecipes">Chargement...</div>
+
       <div v-else-if="recipesError">
         Erreur lors du chargement des recettes.
       </div>
+
       <div v-else class="flex flex-wrap items-stretch justify-center gap-3">
         <RecipesCard
           v-for="recipe in recipes"

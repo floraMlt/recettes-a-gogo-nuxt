@@ -6,14 +6,14 @@
       <h1 class="text-center text-lg">Inscription</h1>
     </div>
 
-    <div class="flex justify-between gap-2">
+    <div class="flex flex-col justify-between gap-2 md:flex-row">
       <CustomInput
         name="firstName"
         placeholder="Prénom"
-        input-class="w-[48%]"
+        input-class="md:w-[48%]"
       />
 
-      <CustomInput name="lastName" placeholder="Nom" input-class="w-[48%]" />
+      <CustomInput name="lastName" placeholder="Nom" input-class="md:w-[48%]" />
     </div>
 
     <CustomInput name="email" placeholder="Email" />

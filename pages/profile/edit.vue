@@ -3,7 +3,7 @@
     class="relative h-full min-h-screen w-screen overflow-y-auto px-4 pt-[9vh] pb-20 md:px-[10vw] md:pt-[100px]"
   >
     <div
-      class="h-[50%] w-[92vw] flex-col items-center justify-center rounded-2xl bg-white px-2 py-5 md:w-[80vw] md:px-15 md:py-10"
+      class="h-[50%] w-[92vw] flex-col items-center justify-center rounded-2xl bg-white px-8 py-5 md:w-[80vw] md:px-15 md:py-10"
     >
       <div class="mb-6 flex items-center justify-center">
         <h1 class="text-primary-700 text-center text-2xl">Mon profil</h1>

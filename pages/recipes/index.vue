@@ -3,14 +3,14 @@
     class="recipes-page flex-column relative flex h-full min-h-screen w-full justify-center overflow-y-auto px-1 pb-20 md:px-35"
   >
     <div
-      class="bg-secondary-light mt-[9vh] h-fit min-h-[50%] min-w-[95%] rounded-xl p-1 pb-10 md:mt-[100px] md:w-[80%] md:p-10"
+      class="bg-secondary-light mt-[12vh] h-fit min-h-[50%] min-w-[95%] rounded-xl p-1 pb-10 md:mt-[100px] md:w-[80%] md:p-10"
     >
       <h1 class="mt-5 mb-4 text-center text-2xl md:mt-0 md:mb-10">
         Les recettes
       </h1>
 
       <div
-        class="mx-4 mb-8 flex flex-col gap-4 md:mx-0 md:flex-row md:items-center md:justify-center"
+        class="mx-6 mb-8 flex flex-col gap-4 md:mx-0 md:flex-row md:items-center md:justify-center"
       >
         <input
           v-model="searchQuery"

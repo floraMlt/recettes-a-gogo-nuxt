@@ -2,7 +2,7 @@
   <div
     class="direction-column relative flex h-full min-h-screen flex-col items-center justify-center pb-8"
   >
-    <div class="mt-[10vh] max-w-[80vw] rounded-xl bg-white p-8">
+    <div class="mt-[10vh] max-w-[90vw] rounded-xl bg-white p-8 md:max-w-[80vw]">
       <h1 class="mb-7 text-center text-2xl">Nouvelle recette</h1>
 
       <form
@@ -153,7 +153,7 @@
       alt="Image d'illustration"
       format="webp"
       sizes="(max-width: 500px) 60px, (max-width: 1000px) 12vw, 120px"
-      class="absolute right-[8%] bottom-0 w-[12%] max-w-[120px] min-w-[60px]"
+      class="absolute right-[8%] bottom-0 w-[12%] max-w-[120px] min-w-[90px] md:min-w-[60px]"
     />
 
     <NuxtImg
@@ -161,7 +161,7 @@
       alt="Image d'illustration"
       format="webp"
       sizes="(max-width: 1500px) 60px, (max-width: 2500px) 6vw, 130px"
-      class="absolute top-[10%] left-[6%] w-[6%] max-w-[130px] min-w-[60px] rotate-15"
+      class="absolute top-[5%] left-[6%] w-[6%] max-w-[130px] min-w-[60px] rotate-15 md:top-[10%]"
     />
   </div>
 </template>

@@ -22,6 +22,7 @@
 import { UserIcon } from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
+import { toast } from 'vue-sonner'
 import * as z from 'zod'
 
 import CustomInput from '@/components/inputs/CustomInput'
@@ -34,12 +35,34 @@ const validationSchema = toTypedSchema(
     password: z.string().min(5)
   })
 )
-const { values, errors, handleSubmit } = useForm({
+
+const { handleSubmit } = useForm({
   validationSchema
 })
 
-const onSignIn = handleSubmit((values) => {
-  console.log('Signing in with', values)
-  signIn('credentials', values)
+const onSignIn = handleSubmit(async (values) => {
+  try {
+    const result = await signIn('credentials', {
+      ...values,
+      redirect: false,
+      callbackUrl: '/'
+    })
+
+    if (result?.error) {
+      toast.error('Erreur de connexion', {
+        description: 'Email ou mot de passe incorrect'
+      })
+    }
+
+    if (!result?.error && result?.url) {
+      window.location.href = result.url
+    }
+  } catch (error) {
+    if (error) {
+      toast.error('Erreur de connexion', {
+        description: error
+      })
+    }
+  }
 })
 </script>

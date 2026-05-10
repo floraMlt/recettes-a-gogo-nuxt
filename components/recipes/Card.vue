@@ -7,7 +7,7 @@
       :file-name="recipe.imageFileName"
       :initial-url="recipe.imageUrl"
       alt="Image de la recette"
-      class="bg-secondary-100 pointer-events-none mx-2 h-[150px] w-auto rounded-lg bg-[url('/img/home2.png')] bg-cover bg-center md:w-[230px]"
+      class="bg-secondary-100 pointer-events-none mx-2 h-[150px] w-auto rounded-lg bg-[url('/img/home2.png')] bg-cover bg-center object-cover md:w-[230px]"
     />
 
     <CardHeader>

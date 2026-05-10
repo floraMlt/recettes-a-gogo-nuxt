@@ -3,7 +3,7 @@
     class="direction-column flex h-full min-h-screen w-screen flex-col items-center justify-center pb-8"
   >
     <h1
-      class="font-playfair mt-[8vh] mb-7 text-center text-2xl sm:mt-[100px] md:mt-[10vh]"
+      class="font-playfair mt-[12vh] mb-7 text-center text-2xl sm:mt-[100px] md:mt-[10vh]"
     >
       Edition de la recette
     </h1>
