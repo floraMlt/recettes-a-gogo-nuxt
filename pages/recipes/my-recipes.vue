@@ -3,11 +3,21 @@
     class="my-recipes-page relative flex h-full min-h-screen w-full justify-center overflow-y-auto px-1 pb-20 md:px-35"
   >
     <div
-      class="bg-secondary-light mt-[12vh] h-fit min-h-[50%] min-w-[95%] rounded-xl p-1 pb-10 md:w-[80%] md:p-10"
+      class="bg-secondary-light mt-[12vh] flex h-fit min-h-[50%] min-w-[95%] flex-col rounded-xl p-1 pb-10 md:w-[80%] md:p-10"
     >
-      <h1 class="mt-5 mb-4 text-center text-2xl md:mt-0 md:mb-10">
+      <h1 class="mt-5 mb-4 text-center text-2xl md:mt-0 md:mb-7">
         Mes recettes
       </h1>
+
+      <Button
+        variant="outline"
+        class="bg-secondary-200 text-primary-600 hover:text-primary-600 hover:bg-secondary-light mx-auto mb-7 hover:cursor-pointer"
+        @click="$router.push('/recipes/create')"
+      >
+        <PlusIcon />
+
+        Créer une nouvelle recette
+      </Button>
 
       <div
         class="mx-6 mb-8 flex flex-col gap-4 md:mx-0 md:flex-row md:items-center md:justify-center"
@@ -78,6 +88,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
+import { PlusIcon } from 'lucide-vue-next'
 
 const userId = ref(null)
 const searchQuery = ref('')

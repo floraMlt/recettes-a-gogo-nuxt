@@ -82,9 +82,9 @@
           <div
             v-for="(instruction, index) in recipe.instructions"
             :key="index"
-            class="flex items-center gap-1.5"
+            class="flex items-start gap-1.5"
           >
-            <CircleSmallIcon size="16px" class="min-w-4" />
+            <CircleSmallIcon size="16px" class="mt-[5px] min-w-4" />
             <p>
               {{ instruction }}
             </p>

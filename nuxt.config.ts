@@ -43,16 +43,13 @@ export default defineNuxtConfig({
   },
   pwa: {
     registerType: 'autoUpdate',
-    injectRegister: 'auto',
     manifest: {
       name: 'Recettes à gogo',
       short_name: 'RecettesAGogo',
       description: 'Mon app de recettes de cuisine',
       theme_color: '#f7f0ea',
-      background_color: '#f7f0ea',
       display: 'standalone',
       start_url: '/',
-      scope: '/',
       icons: [
         {
           src: '/icon-192.png',
@@ -73,7 +70,19 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
-      navigateFallback: '/'
+      runtimeCaching: [
+        {
+          urlPattern: 'https://recettes-a-gogo.com/.*',
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'api-cache',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 86400
+            }
+          }
+        }
+      ]
     }
   }
 })
