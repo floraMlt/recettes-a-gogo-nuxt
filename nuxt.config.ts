@@ -49,7 +49,8 @@ export default defineNuxtConfig({
       description: 'Mon app de recettes de cuisine',
       theme_color: '#f7f0ea',
       display: 'standalone',
-      start_url: '/',
+      start_url: '.',
+      background_color: '#ffffff',
       icons: [
         {
           src: '/icon-192.png',
@@ -70,6 +71,7 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,webp}'],
       runtimeCaching: [
         {
           urlPattern: 'https://recettes-a-gogo.com/.*',
