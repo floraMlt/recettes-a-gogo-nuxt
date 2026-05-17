@@ -1,19 +1,41 @@
 <template>
+  <div
+    v-if="isLoading && currentUrl"
+    v-bind="$attrs"
+    class="flex items-center justify-center"
+    :class="className"
+    :style="{ backgroundImage: 'none' }"
+  >
+    <SpinnerLoader size="sm" />
+  </div>
+
   <NuxtImg
     v-if="currentUrl"
+    v-show="!isLoading"
+    v-bind="$attrs"
     :src="currentUrl"
     :alt="alt"
     :class="className"
     :format="format"
     :sizes="sizes"
+    @load="isLoading = false"
     @error="handleError"
   />
 
-  <div v-else class="min-h-full" :class="className" />
+  <div
+    v-if="!currentUrl"
+    v-bind="$attrs"
+    class="min-h-full"
+    :class="className"
+  />
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
+
+defineOptions({
+  inheritAttrs: false
+})
 
 const props = defineProps({
   fileName: {
@@ -43,6 +65,7 @@ const props = defineProps({
 })
 
 const currentUrl = ref(props.initialUrl)
+const isLoading = ref(!!props.initialUrl)
 const isRegenerating = ref(false)
 
 const handleError = async () => {
@@ -53,6 +76,7 @@ const handleError = async () => {
   try {
     const { url } = await $fetch(`/api/images/${props.fileName}`)
     currentUrl.value = url
+    isLoading.value = true
   } catch (error) {
     console.error('Failed to regenerate URL:', error)
   } finally {
@@ -63,7 +87,10 @@ const handleError = async () => {
 watch(
   () => props.initialUrl,
   (newUrl) => {
-    if (newUrl) currentUrl.value = newUrl
+    if (newUrl) {
+      currentUrl.value = newUrl
+      isLoading.value = true
+    }
   }
 )
 </script>

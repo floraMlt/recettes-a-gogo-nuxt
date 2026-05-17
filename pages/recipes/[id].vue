@@ -84,7 +84,7 @@
             :key="index"
             class="flex items-center gap-1.5"
           >
-            <CircleSmallIcon size="16px" />
+            <CircleSmallIcon size="16px" class="min-w-4" />
             <p>
               {{ instruction }}
             </p>

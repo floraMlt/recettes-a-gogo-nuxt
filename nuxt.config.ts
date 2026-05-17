@@ -42,12 +42,13 @@ export default defineNuxtConfig({
     }
   },
   pwa: {
+    registerType: 'autoUpdate',
     manifest: {
       name: 'Recettes à gogo',
       short_name: 'RecettesAGogo',
       description: 'Mon app de recettes de cuisine',
       theme_color: '#f7f0ea',
-      background_color: '#ff7f0ea',
+      background_color: '#f7f0ea',
       display: 'standalone',
       icons: [
         {

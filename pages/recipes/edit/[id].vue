@@ -138,7 +138,15 @@
           class="mb-6"
         />
 
-        <CustomCheckbox name="isPublic" label="Recette publique" />
+        <div class="display-flex mb-4 flex items-center gap-2">
+          <input
+            type="checkbox"
+            :checked="isPublic"
+            class="accent-secondary-600 text-secondary-600 h-4 w-4 rounded border-gray-300 hover:cursor-pointer"
+            @change="isPublic = $event.target.checked"
+          />
+          <p>Recette publique</p>
+        </div>
 
         <Button
           class="mt-5 ml-auto w-[100px] hover:cursor-pointer"
@@ -167,7 +175,6 @@ import CustomSelect from '@/components/inputs/CustomSelect'
 import CustomTagsInput from '@/components/inputs/CustomTagsInput'
 import CustomTextarea from '@/components/inputs/CustomTextarea'
 import CustomNumber from '@/components/inputs/CustomNumber'
-import CustomCheckbox from '@/components/inputs/CustomCheckbox'
 import CustomInputFile from '@/components/inputs/CustomInputFile'
 import AddIngredientDialog from '@/components/recipes/AddIngredientDialog'
 
@@ -188,6 +195,7 @@ const initialImageFileName = ref('')
 const searchQuery = ref('')
 const searchResults = ref([])
 const isSearching = ref(false)
+const isPublic = ref(false)
 
 const categoriesList = Object.entries(categoriesName).map(([key, value]) => ({
   title: value,
@@ -272,6 +280,7 @@ watchEffect(() => {
   imageFileName.value = recipe.imageFileName || ''
   initialImageFileName.value = recipe.imageFileName || ''
   imageUrl.value = recipe.imageUrl
+  isPublic.value = recipe.isPublic
 
   resetForm({
     values: {
@@ -334,7 +343,7 @@ const editRecipe = async () => {
     cookingTime: values.cookingTime ? Number(values.cookingTime) : null,
     category: values.category || null,
     tags: values.tags || [],
-    isPublic: values.isPublic,
+    isPublic: isPublic.value,
     ingredients: ingredients.value.map((i) => ({
       ingredientId: i.ingredientId,
       quantity:

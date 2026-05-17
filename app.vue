@@ -5,5 +5,6 @@
 
   <ClientOnly>
     <Toaster />
+    <PwaInstallBanner />
   </ClientOnly>
 </template>
