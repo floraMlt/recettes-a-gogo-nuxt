@@ -17,12 +17,12 @@
 
     <CardContent class="flex-column flex">
       <div v-if="recipe.preparationTime" class="mr-4 flex">
-        <AlarmClockIcon class="mr-1.5 size-5" />
+        <AlarmClockIcon class="mx:mr-1.5 mr-1 size-5" />
         {{ convertMinToHours(recipe.preparationTime) }}
       </div>
 
       <div v-if="recipe.cookingTime" class="flex">
-        <CookingPotIcon class="mr-1.5 size-5" />
+        <CookingPotIcon class="mx:mr-1.5 mr-1 size-5" />
         {{ convertMinToHours(recipe.cookingTime) }}
       </div>
     </CardContent>

@@ -43,6 +43,7 @@ export default defineNuxtConfig({
   },
   pwa: {
     registerType: 'autoUpdate',
+    injectRegister: 'auto',
     manifest: {
       name: 'Recettes à gogo',
       short_name: 'RecettesAGogo',
@@ -50,6 +51,8 @@ export default defineNuxtConfig({
       theme_color: '#f7f0ea',
       background_color: '#f7f0ea',
       display: 'standalone',
+      start_url: '/',
+      scope: '/',
       icons: [
         {
           src: '/icon-192.png',
@@ -60,6 +63,12 @@ export default defineNuxtConfig({
           src: '/icon-512.png',
           sizes: '512x512',
           type: 'image/png'
+        },
+        {
+          src: '/icon-512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable'
         }
       ]
     },
