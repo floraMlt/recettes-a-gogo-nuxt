@@ -29,12 +29,15 @@
         Erreur lors du chargement des recettes.
       </div>
 
-      <div v-else class="flex flex-wrap items-stretch justify-center gap-3">
+      <div
+        v-else
+        class="flex w-full flex-wrap items-stretch justify-center gap-3"
+      >
         <RecipesCard
           v-for="recipe in recipes"
           :key="`recipe-${recipe.id}`"
           :recipe="recipe"
-          class="w-[90%] md:w-auto md:min-w-[230px]"
+          class="w-[90%] md:w-auto md:min-w-[250px]"
         />
       </div>
     </div>

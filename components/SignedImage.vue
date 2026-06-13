@@ -64,7 +64,7 @@ const props = defineProps({
   }
 })
 
-const currentUrl = ref(props.initialUrl)
+const currentUrl = ref(props.initialUrl ?? '/img/home2.png')
 const isLoading = ref(!!props.initialUrl)
 const isRegenerating = ref(false)
 
