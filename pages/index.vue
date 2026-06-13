@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex h-full min-h-screen w-screen flex-col items-center justify-center"
+    class="relative flex h-full min-h-screen w-screen max-w-screen flex-col items-center justify-center overflow-x-hidden"
   >
     <div
       class="bg-secondary-light mt-[12vh] mb-8 flex min-h-[50%] w-[90%] flex-col items-center rounded-2xl py-7 md:mt-[8vh] md:w-[80%] md:py-12"

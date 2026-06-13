@@ -38,7 +38,11 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'Recettes à gogo',
-      meta: [{ name: 'description', content: 'Mon app de recettes de cuisine' }]
+      meta: [
+        { name: 'description', content: 'Mon app de recettes de cuisine' },
+        { name: 'theme-color', content: '#f7f0ea' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+      ]
     }
   },
   pwa: {
@@ -49,7 +53,7 @@ export default defineNuxtConfig({
       description: 'Mon app de recettes de cuisine',
       theme_color: '#f7f0ea',
       display: 'standalone',
-      start_url: '.',
+      start_url: '/',
       background_color: '#ffffff',
       icons: [
         {
@@ -74,7 +78,7 @@ export default defineNuxtConfig({
       globPatterns: ['**/*.{js,css,html,png,svg,ico,webp}'],
       runtimeCaching: [
         {
-          urlPattern: 'https://recettes-a-gogo.com/.*',
+          urlPattern: '^https://recettes-a-gogo\\.com/.*',
           handler: 'NetworkFirst',
           options: {
             cacheName: 'api-cache',
