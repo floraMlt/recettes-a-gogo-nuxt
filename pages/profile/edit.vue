@@ -38,6 +38,13 @@
             <p class="text-sm">Administrateur</p>
           </div>
 
+          <CustomInput
+            name="password"
+            type="password"
+            label="Nouveau mot de passe"
+            placeholder="Laisser vide si inchangé"
+          />
+
           <Button
             size="lg"
             type="submit"
@@ -99,7 +106,16 @@ const validationSchema = toTypedSchema(
     email: z.string().email().optional(),
     firstName: z.string().min(2).optional(),
     lastName: z.string().min(2).optional(),
-    isAdmin: z.boolean().default(false)
+    isAdmin: z.boolean().default(false),
+    password: z
+      .string()
+      .transform((val) => (val === '' ? undefined : val))
+      .pipe(
+        z
+          .string()
+          .min(6, 'Le mot de passe doit contenir au moins 6 caractères')
+          .optional()
+      )
   })
 )
 
@@ -109,7 +125,8 @@ const { handleSubmit, setValues } = useForm({
     email: '',
     firstName: '',
     lastName: '',
-    imageFileName: ''
+    imageFileName: '',
+    password: ''
   }
 })
 
@@ -119,7 +136,8 @@ watchEffect(() => {
       email: user.value.email ?? '',
       firstName: user.value.firstName ?? '',
       lastName: user.value.lastName ?? '',
-      imageFileName: user.value.imageFileName || ''
+      imageFileName: user.value.imageFileName || '',
+      password: ''
     }
 
     initialValues.value = values
@@ -142,7 +160,11 @@ const editUser = handleSubmit(async (values) => {
     const modifiedFields = {}
 
     for (const key in values) {
-      if (values[key] !== initialValues.value[key]) {
+      if (key === 'password') {
+        if (values[key] && values[key] !== '') {
+          modifiedFields[key] = values[key]
+        }
+      } else if (values[key] !== initialValues.value[key]) {
         modifiedFields[key] = values[key]
       }
     }
@@ -161,6 +183,8 @@ const editUser = handleSubmit(async (values) => {
       method: 'PATCH',
       body: modifiedFields
     })
+
+    setValues({ password: '' })
 
     toast('Profil mis à jour', {
       description: 'Votre profil a bien été mis à jour.',

@@ -52,16 +52,29 @@
             </h2>
 
             <div class="grid grid-cols-1 gap-2 md:grid md:grid-cols-2">
-              <p
+              <div
                 v-for="(ingredient, index) in recipe.ingredients"
                 :key="index"
                 class="flex items-center gap-1.5"
               >
                 <CircleSmallIcon size="12px" fill="#795f6b" />
-                {{
-                  `${ingredient.ingredient.title} (${ingredient.quantity} ${units[ingredient.ingredient.unit]})`
-                }}
-              </p>
+
+                <p>
+                  {{
+                    `${ingredient.ingredient.title} (${ingredient.quantity} ${units[ingredient.ingredient.unit]})`
+                  }}
+                </p>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  class="ml-1 size-6 cursor-pointer"
+                  :disabled="addingToShoppingList.has(index)"
+                  @click="addToShoppingList(ingredient, index)"
+                >
+                  <ShoppingCartIcon class="size-4" />
+                </Button>
+              </div>
             </div>
 
             <div class="justify-self-right mt-8 flex">
@@ -159,8 +172,11 @@ import {
   StarIcon,
   CircleSmallIcon,
   PenIcon,
-  UserIcon
+  UserIcon,
+  ShoppingCartIcon
 } from 'lucide-vue-next'
+import { Button } from '@/components/ui/button'
+import { toast } from 'vue-sonner'
 import { convertMinToHours } from '@/helpers/convertMinToHours'
 import categoriesName from '@/constants/CategoriesName'
 import units from '@/constants/Units'
@@ -183,5 +199,35 @@ const updateFavorites = async () => {
   })
 
   recipe.value.favorite = !recipe.value.favorite
+}
+
+const addingToShoppingList = ref(new Set())
+
+const addToShoppingList = async (ingredient, index) => {
+  addingToShoppingList.value = new Set([...addingToShoppingList.value, index])
+
+  try {
+    await $fetch('/api/shopping-list', {
+      method: 'POST',
+      body: {
+        title: ingredient.ingredient.title,
+        quantity: ingredient.quantity,
+        unit: ingredient.ingredient.unit,
+        recipeTitle: recipe.value.title
+      }
+    })
+
+    toast('Ajouté à la liste de courses', {
+      description: `${ingredient.ingredient.title} a été ajouté à votre liste de courses.`
+    })
+  } catch {
+    toast('Erreur', {
+      description: "Impossible d'ajouter l'ingrédient à la liste de courses."
+    })
+  } finally {
+    const next = new Set(addingToShoppingList.value)
+    next.delete(index)
+    addingToShoppingList.value = next
+  }
 }
 </script>

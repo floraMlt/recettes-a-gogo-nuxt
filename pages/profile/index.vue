@@ -35,6 +35,68 @@
       </div>
     </div>
 
+    <section
+      class="mt-6 w-full rounded-2xl bg-white px-4 py-6 md:w-[80vw] md:px-8"
+    >
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-primary-700 text-xl">Ma liste de courses</h2>
+
+        <Button
+          v-if="shoppingList.length > 0"
+          size="sm"
+          class="text-destructive border-destructive/10 hover:bg-destructive/10 cursor-pointer border bg-white"
+          :disabled="isResetting"
+          @click="resetShoppingList"
+        >
+          <Trash2Icon class="size-4" />
+          Réinitialiser
+        </Button>
+      </div>
+
+      <p
+        v-if="!isFetchingList && shoppingList.length === 0"
+        class="text-muted-foreground text-sm italic"
+      >
+        Votre liste de courses est vide.
+      </p>
+
+      <Loader v-if="isFetchingList" />
+
+      <ul v-if="shoppingList.length > 0" class="space-y-2">
+        <li
+          v-for="item in shoppingList"
+          :key="item.id"
+          class="border-primary-100 flex items-center justify-between rounded-lg border p-2"
+        >
+          <div class="flex items-center gap-2">
+            <CircleSmallIcon size="12px" fill="#795f6b" />
+            <span>
+              {{ item.title }}
+              <span class="text-muted-foreground">
+                ({{ item.quantity }} {{ units[item.unit] }})
+              </span>
+              <span
+                v-if="item.recipeTitle"
+                class="text-primary-600 ml-1 text-xs italic"
+              >
+                — {{ item.recipeTitle }}</span
+              >
+            </span>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            class="text-destructive hover:bg-destructive/10 hover:text-destructive size-7 cursor-pointer"
+            :disabled="removingItems.has(item.id)"
+            @click="removeFromShoppingList(item.id)"
+          >
+            <XIcon class="size-4" />
+          </Button>
+        </li>
+      </ul>
+    </section>
+
     <NuxtImg
       src="/img/auth1.png"
       alt="Image d'illustration"
@@ -47,7 +109,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import { PenIcon } from 'lucide-vue-next'
+import { PenIcon, CircleSmallIcon, Trash2Icon, XIcon } from 'lucide-vue-next'
+import { Button } from '@/components/ui/button'
+import { toast } from 'vue-sonner'
+import units from '@/constants/Units'
 
 const userId = ref(null)
 const { data: userData } = await useAuth()
@@ -56,4 +121,60 @@ userId.value = userData.value?.user?.id
 const { data: user } = await useFetch(
   `/api/users/${userId.value}?userId=${userId.value}`
 )
+
+const { data: shoppingList, isFetching: isFetchingList } = await useFetch(
+  `/api/shopping-list?userId=${userId.value}`,
+  {
+    default: () => []
+  }
+)
+
+const isResetting = ref(false)
+const removingItems = ref(new Set())
+
+const removeFromShoppingList = async (id) => {
+  removingItems.value = new Set([...removingItems.value, id])
+
+  try {
+    await $fetch(`/api/shopping-list/${id}`, {
+      method: 'DELETE'
+    })
+
+    shoppingList.value = shoppingList.value.filter((item) => item.id !== id)
+
+    toast('Retiré', {
+      description: "L'ingrédient a été retiré de la liste de courses."
+    })
+  } catch {
+    toast('Erreur', {
+      description: "Impossible de retirer l'ingrédient."
+    })
+  } finally {
+    const next = new Set(removingItems.value)
+    next.delete(id)
+    removingItems.value = next
+  }
+}
+
+const resetShoppingList = async () => {
+  isResetting.value = true
+
+  try {
+    await $fetch('/api/shopping-list', {
+      method: 'DELETE'
+    })
+
+    shoppingList.value = []
+
+    toast('Liste réinitialisée', {
+      description: 'La liste de courses a été vidée.'
+    })
+  } catch {
+    toast('Erreur', {
+      description: 'Impossible de réinitialiser la liste de courses.'
+    })
+  } finally {
+    isResetting.value = false
+  }
+}
 </script>

@@ -45,9 +45,10 @@ model User {
   imageFileName String?  @map("image_file_name")
   isAdmin        Boolean @default(false)
 
-  recipes     Recipe[]     @relation("UserRecipes")
-  favorites   Favorite[]
-  ingredients Ingredient[] @relation("UserIngredients")
+  recipes           Recipe[]             @relation("UserRecipes")
+  favorites         Favorite[]
+  ingredients       Ingredient[]         @relation("UserIngredients")
+  shoppingListItems ShoppingListItem[]
 }
 
 model Recipe {
@@ -117,4 +118,16 @@ model RecipeTag {
   tag    Tag    @relation(fields: [tagId], references: [id])
 
   @@id([recipeId, tagId])
+}
+
+model ShoppingListItem {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  quantity    Float
+  unit        Unit
+  recipeTitle String?  @map("recipe_title")
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
 }
