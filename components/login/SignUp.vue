@@ -30,6 +30,7 @@
 import { UserIcon } from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
+import { toast } from 'vue-sonner'
 import * as z from 'zod'
 
 import CustomInput from '@/components/inputs/CustomInput'
@@ -56,8 +57,14 @@ const onSignUp = handleSubmit(async (values) => {
       method: 'POST',
       body: values
     })
+
+    toast('Compte créé', {
+      description: 'Votre compte a bien été créé.'
+    })
   } catch (error) {
-    console.error('Error creating user:', error)
+    toast('Erreur', {
+      description: `Une erreur est survenue lors de la création de votre compte. ${error}`
+    })
   }
 })
 </script>

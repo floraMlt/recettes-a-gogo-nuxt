@@ -1,7 +1,6 @@
 import prisma from '../../utils/prisma'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
-import { getServerSession } from '#auth'
 
 const registerUserSchema = z.object({
   email: z.string().email(),
@@ -13,14 +12,6 @@ const registerUserSchema = z.object({
 })
 
 export default defineEventHandler(async (request) => {
-  const session = await getServerSession(request)
-  if (!session) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'User not authenticated'
-    })
-  }
-
   const body = await readBody(request)
 
   const parsed = registerUserSchema.safeParse(body)
