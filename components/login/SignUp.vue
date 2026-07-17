@@ -20,7 +20,12 @@
 
     <CustomInput name="password" type="password" placeholder="Mot de passe" />
 
-    <Button size="lg" type="submit" class="mt-2 hover:cursor-pointer">
+    <Button
+      size="lg"
+      type="submit"
+      class="mt-2 hover:cursor-pointer"
+      :disabled="isSubmitting"
+    >
       Créer un compte
     </Button>
   </form>
@@ -39,15 +44,15 @@ const { signIn } = useAuth()
 
 const validationSchema = toTypedSchema(
   z.object({
-    email: z.string().email(),
-    password: z.string().min(6),
-    firstName: z.string().min(2).optional(),
-    lastName: z.string().min(2).optional(),
+    email: z.string().email('Email invalide'),
+    password: z.string().min(6, '6 caractères minimum'),
+    firstName: z.string().min(2, '2 caractères minimum'),
+    lastName: z.string().min(2, '2 caractères minimum'),
     isAdmin: z.boolean().optional().default(false)
   })
 )
 
-const { values, errors, handleSubmit } = useForm({
+const { values, errors, handleSubmit, isSubmitting } = useForm({
   validationSchema
 })
 
@@ -57,14 +62,33 @@ const onSignUp = handleSubmit(async (values) => {
       method: 'POST',
       body: values
     })
-
-    toast('Compte créé', {
-      description: 'Votre compte a bien été créé.'
-    })
   } catch (error) {
-    toast('Erreur', {
-      description: `Une erreur est survenue lors de la création de votre compte. ${error}`
+    const message = error?.data?.message || error?.message || 'Erreur inconnue'
+    toast.error('Erreur', {
+      description: `Impossible de créer le compte : ${message}`
     })
+    return
   }
+
+  const result = await signIn('credentials', {
+    email: values.email,
+    password: values.password,
+    redirect: false
+  })
+
+  if (result?.error) {
+    toast.error('Erreur', {
+      description:
+        'Compte créé mais connexion impossible. Essayez de vous connecter.'
+    })
+
+    return
+  }
+
+  toast.success('Compte créé', {
+    description: 'Votre compte a bien été créé.'
+  })
+
+  await navigateTo('/')
 })
 </script>
